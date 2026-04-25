@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OnzePerfeito — A Minha Equipa</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .equipa-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 2rem 0 1.5rem;
+    }
+
+    .equipa-stats {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .equipa-stat {
+      background: rgba(15,77,46,0.4);
+      border: 1px solid rgba(201,168,76,0.18);
+      border-radius: var(--raio);
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .equipa-stat .label {
+      font-size: 0.7rem;
+      font-family: var(--fonte-mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cinzento);
+    }
+
+    .equipa-stat .valor {
+      font-family: var(--fonte-display);
+      font-size: 1.5rem;
+      color: var(--dourado);
+      line-height: 1;
+    }
+
+    .secao {
+      margin-bottom: 2rem;
+    }
+
+    .secao-cabecalho {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .secao-titulo {
+      font-family: var(--fonte-display);
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      color: var(--dourado);
+    }
+
+    .secao-sub {
+      font-size: 0.75rem;
+      color: var(--cinzento);
+      font-family: var(--fonte-mono);
+    }
+
+    .tabela-wrapper {
+      overflow-x: auto;
+      border-radius: var(--raio-grande);
+      border: 1px solid rgba(201,168,76,0.15);
+    }
+
+    .tabela { min-width: 500px; }
+
+    .nome-jogador { font-weight: 500; }
+    .clube-jogador { font-size: 0.75rem; color: var(--cinzento); }
+    .preco-col { font-family: var(--fonte-mono); color: var(--dourado); }
+    .media-col { font-family: var(--fonte-mono); }
+
+    .btn-remover {
+      padding: 0.3rem 0.75rem;
+      font-size: 0.75rem;
+    }
+
+    .suplente-row { opacity: 0.75; }
+    .suplente-row td:first-child::before {
+      content: 'SUB  ';
+      font-size: 0.65rem;
+      font-family: var(--fonte-mono);
+      color: var(--cinzento);
+      letter-spacing: 0.06em;
+    }
+
+    .equipa-vazia {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--cinzento);
+    }
+
+    .equipa-vazia a { color: var(--dourado); }
+
+    .barra-progresso-wrap {
+      height: 6px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 0.4rem;
+    }
+
+    .barra-progresso {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--dourado);
+      transition: width 0.4s ease;
+    }
+
+    .distribuicao {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .dist-item {
+      background: rgba(15,77,46,0.4);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: var(--raio);
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .dist-num {
+      font-family: var(--fonte-display);
+      font-size: 1.2rem;
+      color: var(--dourado);
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="navbar-placeholder"></div>
+
+  <div class="page-content">
+
+    <div class="equipa-header">
+      <div>
+        <h2>A Minha Equipa</h2>
+        <p class="text-cinzento text-sm">Gere os teus 15 jogadores</p>
+      </div>
+      <a href="mercado.html" class="btn btn-primario">+ Adicionar Jogadores</a>
+    </div>
+
+    <div id="alerta" class="alerta"></div>
+
+    <!-- Stats da equipa -->
+    <div class="equipa-stats" id="equipa-stats">
+      <div class="equipa-stat">
+        <span class="label">Jogadores</span>
+        <span class="valor" id="stat-total">—</span>
+      </div>
+      <div class="equipa-stat">
+        <span class="label">Saldo restante</span>
+        <span class="valor" id="stat-saldo">—</span>
+      </div>
+      <div class="equipa-stat">
+        <span class="label">Custo total</span>
+        <span class="valor" id="stat-custo">—</span>
+      </div>
+      <div class="equipa-stat">
+        <span class="label">Valor da equipa</span>
+        <span class="valor" id="stat-valor">—</span>
+      </div>
+    </div>
+
+    <!-- Progresso -->
+    <div style="margin-bottom:1.5rem;">
+      <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--cinzento);margin-bottom:0.3rem;">
+        <span>Vagas preenchidas</span>
+        <span id="progresso-texto">0 / 15</span>
+      </div>
+      <div class="barra-progresso-wrap">
+        <div class="barra-progresso" id="barra-progresso" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Distribuição por posição -->
+    <div class="distribuicao" id="distribuicao"></div>
+
+    <!-- Titulares -->
+    <div class="secao" id="secao-titulares">
+      <div class="secao-cabecalho">
+        <span class="secao-titulo">Titulares</span>
+        <span class="secao-sub" id="count-titulares">0 / 11</span>
+      </div>
+      <div class="tabela-wrapper">
+        <table class="tabela">
+          <thead>
+            <tr>
+              <th>Jogador</th>
+              <th>Posição</th>
+              <th>Preço</th>
+              <th>Média</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tabela-titulares">
+            <tr><td colspan="5"><div class="loading-centro"><div class="spinner"></div></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Suplentes -->
+    <div class="secao" id="secao-suplentes">
+      <div class="secao-cabecalho">
+        <span class="secao-titulo">Suplentes</span>
+        <span class="secao-sub" id="count-suplentes">0 / 4</span>
+      </div>
+      <div class="tabela-wrapper">
+        <table class="tabela">
+          <thead>
+            <tr>
+              <th>Jogador</th>
+              <th>Posição</th>
+              <th>Preço</th>
+              <th>Média</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tabela-suplentes">
+            <tr><td colspan="5"><p style="padding:1rem;text-align:center;color:var(--cinzento);font-size:0.85rem;">Sem suplentes</p></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="navbar.js"></script>
+  <script src="auth.js"></script>
+  <script src="api.js"></script>
+  <script>
+    if (!Auth.exigirAutenticacao()) throw new Error();
+    Auth.preencherNavbar();
+
+    const utilizadorId = Auth.obterIDdoToken();
+    let equipaAtual = [];
+
+    // ── Carregar equipa ────────────────────────────────────
+    async function carregar() {
+      try {
+        const equipa = await API.equipas.obter(utilizadorId);
+        equipaAtual = equipa.jogadores || [];
+      } catch {
+        equipaAtual = [];
+      }
+      renderizar();
+    }
+
+    // ── Renderizar ─────────────────────────────────────────
+    function renderizar() {
+      const titulares = equipaAtual.slice(0, 11);
+      const suplentes = equipaAtual.slice(11, 15);
+      const total     = equipaAtual.length;
+      const custo     = equipaAtual.reduce((s, j) => s + (j.preco || 0), 0);
+      const saldo     = Math.max(0, 100 - custo);
+
+      // Stats
+      document.getElementById('stat-total').textContent  = total;
+      document.getElementById('stat-saldo').textContent  = saldo.toFixed(1) + 'M';
+      document.getElementById('stat-custo').textContent  = custo.toFixed(1) + 'M';
+      document.getElementById('stat-valor').textContent  = custo.toFixed(1) + 'M';
+      document.getElementById('progresso-texto').textContent = `${total} / 15`;
+      document.getElementById('barra-progresso').style.width  = `${(total / 15) * 100}%`;
+      document.getElementById('count-titulares').textContent  = `${titulares.length} / 11`;
+      document.getElementById('count-suplentes').textContent  = `${suplentes.length} / 4`;
+
+      // Distribuição por posição
+      const dist = { 'guarda-redes': 0, 'defesa': 0, 'medio': 0, 'avancado': 0 };
+      equipaAtual.forEach(j => { if (dist[j.posicao] !== undefined) dist[j.posicao]++; });
+      const icones = { 'guarda-redes': '🧤', 'defesa': '🛡️', 'medio': '🎯', 'avancado': '⚽' };
+      const labels = { 'guarda-redes': 'GR', 'defesa': 'DEF', 'medio': 'MED', 'avancado': 'AV' };
+      document.getElementById('distribuicao').innerHTML =
+        Object.entries(dist).map(([pos, n]) => `
+          <div class="dist-item">
+            <span>${icones[pos]}</span>
+            <span class="dist-num">${n}</span>
+            <span style="color:var(--cinzento)">${labels[pos]}</span>
+          </div>`).join('');
+
+      // Tabelas
+      if (!equipaAtual.length) {
+        document.getElementById('tabela-titulares').innerHTML =
+          `<tr><td colspan="5"><div class="equipa-vazia">
+            <p>A tua equipa está vazia.</p>
+            <p style="margin-top:0.5rem"><a href="mercado.html">Vai ao Mercado</a> para adicionar jogadores.</p>
+           </div></td></tr>`;
+        document.getElementById('tabela-suplentes').innerHTML =
+          `<tr><td colspan="5"><p style="padding:1rem;text-align:center;color:var(--cinzento);font-size:0.85rem;">Sem suplentes</p></td></tr>`;
+        return;
+      }
+
+      document.getElementById('tabela-titulares').innerHTML = titulares.length
+        ? titulares.map((j, i) => linhaJogador(j, i)).join('')
+        : `<tr><td colspan="5"><p style="padding:1rem;text-align:center;color:var(--cinzento);font-size:0.85rem;">Sem titulares</p></td></tr>`;
+
+      document.getElementById('tabela-suplentes').innerHTML = suplentes.length
+        ? suplentes.map((j, i) => linhaJogador(j, i + 11, true)).join('')
+        : `<tr><td colspan="5"><p style="padding:1rem;text-align:center;color:var(--cinzento);font-size:0.85rem;">Sem suplentes</p></td></tr>`;
+    }
+
+    function linhaJogador(j, idx, suplente = false) {
+      return `
+        <tr class="${suplente ? 'suplente-row' : ''}">
+          <td>
+            <div class="nome-jogador">${j.nome}</div>
+            <div class="clube-jogador">${j.clube}</div>
+          </td>
+          <td>${API.badgePosicao(j.posicao)}</td>
+          <td class="preco-col">${API.formatarPreco(j.preco)}</td>
+          <td class="media-col">${API.formatarMedia(j.media_pontuacao)}</td>
+          <td>
+            <button class="btn btn-perigo btn-remover" onclick="removerJogador('${j.id}')">Remover</button>
+          </td>
+        </tr>`;
+    }
+
+    // ── Remover jogador ────────────────────────────────────
+    async function removerJogador(id) {
+      const idx = equipaAtual.findIndex(j => j.id === id);
+      if (idx === -1) return;
+      const [removido] = equipaAtual.splice(idx, 1);
+
+      try {
+        await API.equipas.guardar(utilizadorId, equipaAtual);
+        API.mostrarAlerta('alerta', `${removido.nome} removido da equipa.`, 'info');
+        renderizar();
+      } catch (e) {
+        // Reverter
+        equipaAtual.splice(idx, 0, removido);
+        API.mostrarAlerta('alerta', e.message || 'Erro ao guardar equipa.', 'erro');
+      }
+    }
+
+    carregar();
+  </script>
+</body>
+</html>
