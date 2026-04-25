@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OnzePerfeito — Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .boas-vindas {
+      margin: 2rem 0 1.5rem;
+    }
+    .boas-vindas h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--branco);
+    }
+    .boas-vindas h2 span { color: var(--dourado); }
+    .boas-vindas p { margin-top: 0.25rem; font-size: 0.875rem; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: rgba(15,77,46,0.4);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: var(--raio-grande);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      font-family: var(--fonte-mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cinzento);
+    }
+
+    .stat-valor {
+      font-family: var(--fonte-display);
+      font-size: 2rem;
+      color: var(--dourado);
+      line-height: 1;
+    }
+
+    .stat-sub {
+      font-size: 0.78rem;
+      color: rgba(245,245,240,0.5);
+    }
+
+    .secao-titulo {
+      font-family: var(--fonte-display);
+      font-size: 1.1rem;
+      color: var(--dourado);
+      letter-spacing: 0.06em;
+      margin-bottom: 0.75rem;
+    }
+
+    .jornada-info {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .jornada-box {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .acao-rapida {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .acao-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1.25rem;
+      background: rgba(15,77,46,0.35);
+      border: 1px solid rgba(201,168,76,0.18);
+      border-radius: var(--raio-grande);
+      color: var(--branco);
+      text-decoration: none;
+      transition: all var(--transicao);
+      cursor: pointer;
+    }
+
+    .acao-btn:hover {
+      border-color: rgba(201,168,76,0.5);
+      background: rgba(201,168,76,0.1);
+      transform: translateY(-2px);
+      color: var(--dourado);
+    }
+
+    .acao-btn .icone { font-size: 1.8rem; }
+    .acao-btn .acao-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      text-align: center;
+    }
+
+    .ultimas-pontuacoes {
+      margin-top: 1.5rem;
+    }
+
+    .pontuacao-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .pontuacao-item:last-child { border-bottom: none; }
+
+    .pontuacao-nome { font-size: 0.9rem; font-weight: 500; }
+    .pontuacao-clube { font-size: 0.75rem; color: var(--cinzento); }
+
+    .pontuacao-pts {
+      font-family: var(--fonte-display);
+      font-size: 1.4rem;
+      color: var(--dourado);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: var(--cinzento);
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="navbar-placeholder"></div>
+
+  <div class="page-content">
+
+    <div class="boas-vindas">
+      <h2>Olá, <span id="nome-utilizador">—</span> 👋</h2>
+      <p id="data-hoje" class="text-cinzento"></p>
+    </div>
+
+    <!-- Stats rápidas -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">Saldo disponível</span>
+        <span class="stat-valor" id="stat-saldo">—</span>
+        <span class="stat-sub">Milhões de euros</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Jogadores na equipa</span>
+        <span class="stat-valor" id="stat-jogadores">—</span>
+        <span class="stat-sub">Máximo: 15</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Jornada atual</span>
+        <span class="stat-valor" id="stat-jornada">—</span>
+        <span class="stat-sub">Liga Portugal 25/26</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Pontuação total</span>
+        <span class="stat-valor" id="stat-pontuacao">—</span>
+        <span class="stat-sub">Esta época</span>
+      </div>
+    </div>
+
+    <!-- Evento especial + Ações rápidas -->
+    <div class="jornada-info">
+      <div class="jornada-box" style="flex:2; min-width:280px;">
+        <p class="secao-titulo">Evento Especial</p>
+        <div id="evento-container">
+          <div class="loading-centro"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+      <div class="jornada-box" style="flex:1; min-width:200px;">
+        <p class="secao-titulo">Acesso Rápido</p>
+        <div class="acao-rapida">
+          <a href="mercado.html" class="acao-btn">
+            <span class="icone">🛒</span>
+            <span class="acao-label">Comprar Jogadores</span>
+          </a>
+          <a href="equipa.html" class="acao-btn">
+            <span class="icone">👕</span>
+            <span class="acao-label">Gerir Equipa</span>
+          </a>
+          <a href="ligas.html" class="acao-btn">
+            <span class="icone">🏆</span>
+            <span class="acao-label">As Minhas Ligas</span>
+          </a>
+          <a href="classificacoes.html" class="acao-btn">
+            <span class="icone">📊</span>
+            <span class="acao-label">Classificações</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Últimas pontuações da equipa -->
+    <div class="card ultimas-pontuacoes">
+      <p class="secao-titulo">Pontuações da Última Jornada — A Minha Equipa</p>
+      <div id="pontuacoes-container">
+        <div class="loading-centro"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="navbar.js"></script>
+  <script src="auth.js"></script>
+  <script src="api.js"></script>
+  <script>
+    // Proteger página
+    if (!Auth.exigirAutenticacao()) throw new Error('Não autenticado');
+
+    const utilizadorId = Auth.obterIDdoToken();
+    Auth.preencherNavbar();
+
+    // Data de hoje
+    document.getElementById('nome-utilizador').textContent = Auth.obterNome();
+    document.getElementById('data-hoje').textContent = new Date().toLocaleDateString('pt-PT', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+
+    // Jornada atual — estimativa baseada na data (a Liga começa em agosto)
+    function calcularJornada() {
+      const inicio = new Date('2025-08-10');
+      const hoje   = new Date();
+      const semanas = Math.floor((hoje - inicio) / (7 * 24 * 60 * 60 * 1000)) + 1;
+      return Math.max(1, Math.min(34, semanas));
+    }
+
+    const jornadaAtual = calcularJornada();
+    document.getElementById('stat-jornada').textContent = jornadaAtual;
+
+    // Carregar equipa
+    async function carregarEquipa() {
+      try {
+        const equipa = await API.equipas.obter(utilizadorId);
+        const jogadores = equipa.jogadores || [];
+        document.getElementById('stat-jogadores').textContent = jogadores.length;
+
+        // Calcular saldo — 100M menos custo total dos jogadores
+        const custoTotal = jogadores.reduce((s, j) => s + (j.preco || 0), 0);
+        const saldo = Math.max(0, 100 - custoTotal);
+        document.getElementById('stat-saldo').textContent = saldo.toFixed(1) + 'M';
+
+        return jogadores;
+      } catch {
+        document.getElementById('stat-jogadores').textContent = '0';
+        document.getElementById('stat-saldo').textContent = '100.0M';
+        return [];
+      }
+    }
+
+    // Carregar evento especial da jornada
+    async function carregarEvento() {
+      const container = document.getElementById('evento-container');
+      try {
+        const evento = await API.jornadas.evento(jornadaAtual);
+        const icones = {
+          'Semana dos Avançados': '⚽',
+          'Semana dos Defesas':   '🛡️',
+          'Semana dos Médios':    '🎯',
+          'Semana dos Guarda-Redes': '🧤',
+          'Jornada de Ouro':     '✨',
+          'Jornada Surpresa':    '🎲',
+        };
+        const icone = icones[evento.nome] || '🏆';
+        container.innerHTML = `
+          <div class="evento-banner">
+            <span class="evento-icone">${icone}</span>
+            <div>
+              <div class="evento-nome">${evento.nome}</div>
+              <div class="evento-desc">Jornada ${jornadaAtual} · ${evento.descricao || 'Bónus ativo esta semana'}</div>
+            </div>
+          </div>`;
+      } catch {
+        container.innerHTML = `
+          <div class="evento-banner">
+            <span class="evento-icone">⏳</span>
+            <div>
+              <div class="evento-nome">Aguardar Sorteio</div>
+              <div class="evento-desc">O evento da jornada ${jornadaAtual} ainda não foi sorteado</div>
+            </div>
+          </div>`;
+      }
+    }
+
+    // Carregar pontuações da equipa na última jornada
+    async function carregarPontuacoes(jogadoresDaEquipa) {
+      const container = document.getElementById('pontuacoes-container');
+      if (!jogadoresDaEquipa.length) {
+        container.innerHTML = `<p class="empty-state">Ainda não tens jogadores na equipa.<br><a href="mercado.html">Vai ao Mercado</a> para começar.</p>`;
+        document.getElementById('stat-pontuacao').textContent = '0';
+        return;
+      }
+
+      try {
+        const pontuacoes = await API.jornadas.pontuacoes(jornadaAtual);
+        const ids = new Set(jogadoresDaEquipa.map(j => j.id || j.jogador_id));
+        const minhas = pontuacoes.filter(p => ids.has(p.jogador_id));
+
+        if (!minhas.length) {
+          container.innerHTML = `<p class="empty-state">Ainda não há pontuações para a jornada ${jornadaAtual}.</p>`;
+          document.getElementById('stat-pontuacao').textContent = '0';
+          return;
+        }
+
+        const total = minhas.reduce((s, p) => s + (p.pontuacao || 0), 0);
+        document.getElementById('stat-pontuacao').textContent = total;
+
+        // Ordenar por pontuação desc
+        minhas.sort((a, b) => b.pontuacao - a.pontuacao);
+
+        container.innerHTML = minhas.map(p => {
+          const jogador = jogadoresDaEquipa.find(j => (j.id || j.jogador_id) === p.jogador_id) || {};
+          return `
+            <div class="pontuacao-item">
+              <div>
+                <div class="pontuacao-nome">${jogador.nome || p.jogador_id}</div>
+                <div class="pontuacao-clube">${jogador.clube || ''} · ${jogador.posicao || ''}</div>
+              </div>
+              <span class="pontuacao-pts">${p.pontuacao}</span>
+            </div>`;
+        }).join('');
+      } catch {
+        container.innerHTML = `<p class="empty-state">Não foi possível carregar as pontuações.</p>`;
+        document.getElementById('stat-pontuacao').textContent = '—';
+      }
+    }
+
+    // Inicializar
+    (async () => {
+      const jogadores = await carregarEquipa();
+      await Promise.all([
+        carregarEvento(),
+        carregarPontuacoes(jogadores),
+      ]);
+    })();
+  </script>
+</body>
+</html>

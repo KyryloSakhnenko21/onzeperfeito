@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OnzePerfeito — Classificações</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .class-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 2rem 0 1.5rem;
+    }
+
+    .jornada-selector {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .jornada-selector button {
+      background: rgba(15,77,46,0.4);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: var(--raio);
+      color: var(--branco);
+      font-family: var(--fonte-mono);
+      font-size: 0.85rem;
+      padding: 0.4rem 0.85rem;
+      cursor: pointer;
+      transition: all var(--transicao);
+    }
+
+    .jornada-selector button:hover { border-color: var(--dourado); color: var(--dourado); }
+    .jornada-selector button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .jornada-label {
+      font-family: var(--fonte-display);
+      font-size: 1.1rem;
+      color: var(--dourado);
+      letter-spacing: 0.05em;
+      min-width: 120px;
+      text-align: center;
+    }
+
+    /* Pódio top 3 */
+    .podio {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .podio-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .podio-pedestal {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      border-radius: var(--raio) var(--raio) 0 0;
+      padding: 0.75rem 1.5rem 0.5rem;
+      min-width: 100px;
+    }
+
+    .podio-1 .podio-pedestal { height: 100px; background: rgba(201,168,76,0.25); border: 1px solid rgba(201,168,76,0.5); }
+    .podio-2 .podio-pedestal { height: 75px;  background: rgba(192,192,192,0.15); border: 1px solid rgba(192,192,192,0.3); }
+    .podio-3 .podio-pedestal { height: 55px;  background: rgba(205,127,50,0.15); border: 1px solid rgba(205,127,50,0.3); }
+
+    .podio-posicao {
+      font-family: var(--fonte-display);
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+
+    .podio-1 .podio-posicao { color: var(--dourado); }
+    .podio-2 .podio-posicao { color: #c0c0c0; }
+    .podio-3 .podio-posicao { color: #cd7f32; }
+
+    .podio-nome {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: center;
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .podio-pts {
+      font-family: var(--fonte-mono);
+      font-size: 0.75rem;
+      color: var(--cinzento);
+    }
+
+    /* Tabela classificação */
+    .tabela-wrapper {
+      overflow-x: auto;
+      border-radius: var(--raio-grande);
+      border: 1px solid rgba(201,168,76,0.15);
+    }
+
+    .tabela { min-width: 420px; }
+
+    .pos-col {
+      font-family: var(--fonte-display);
+      font-size: 1.1rem;
+      color: var(--cinzento);
+      width: 50px;
+    }
+
+    .pos-col.top1 { color: var(--dourado); }
+    .pos-col.top2 { color: #c0c0c0; }
+    .pos-col.top3 { color: #cd7f32; }
+
+    .eu-row { background: rgba(201,168,76,0.07) !important; }
+    .eu-row td { color: var(--dourado) !important; }
+
+    .pts-col {
+      font-family: var(--fonte-display);
+      font-size: 1.3rem;
+      color: var(--dourado);
+    }
+
+    .separador-classificacao {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-liga {
+      background: rgba(15,77,46,0.4);
+      border: 1px solid rgba(201,168,76,0.18);
+      border-radius: var(--raio);
+      color: rgba(245,245,240,0.7);
+      font-family: var(--fonte-corpo);
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.45rem 1rem;
+      cursor: pointer;
+      transition: all var(--transicao);
+    }
+
+    .tab-liga.ativo, .tab-liga:hover {
+      border-color: var(--dourado);
+      color: var(--dourado);
+    }
+  </style>
+</head>
+<body>
+  <div id="navbar-placeholder"></div>
+
+  <div class="page-content">
+
+    <div class="class-header">
+      <div>
+        <h2>Classificações</h2>
+        <p class="text-cinzento text-sm">Rankings por jornada</p>
+      </div>
+      <div class="jornada-selector">
+        <button onclick="mudarJornada(-1)" id="btn-ant">‹ Ant.</button>
+        <span class="jornada-label" id="jornada-label">J —</span>
+        <button onclick="mudarJornada(1)" id="btn-prox">Prox. ›</button>
+      </div>
+    </div>
+
+    <!-- Selector de liga -->
+    <div class="separador-classificacao" id="tabs-ligas"></div>
+
+    <!-- Pódio -->
+    <div class="podio" id="podio"></div>
+
+    <!-- Tabela -->
+    <div class="tabela-wrapper">
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th style="width:50px">#</th>
+            <th>Utilizador</th>
+            <th>Pontuação</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-classificacao">
+          <tr><td colspan="3"><div class="loading-centro"><div class="spinner"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script src="navbar.js"></script>
+  <script src="auth.js"></script>
+  <script src="api.js"></script>
+  <script>
+    if (!Auth.exigirAutenticacao()) throw new Error();
+    Auth.preencherNavbar();
+
+    const utilizadorId = Auth.obterIDdoToken();
+    const nomeAtual    = Auth.obterNome();
+
+    // Jornada
+    function calcularJornada() {
+      const inicio = new Date('2025-08-10');
+      const semanas = Math.floor((new Date() - inicio) / (7 * 24 * 60 * 60 * 1000)) + 1;
+      return Math.max(1, Math.min(34, semanas));
+    }
+
+    let jornadaAtual = calcularJornada();
+    let todasPontuacoes = [];
+    let equipas = {};
+    let utilizadores = {};
+
+    // ── Mudar jornada ──────────────────────────────────────
+    function mudarJornada(delta) {
+      jornadaAtual = Math.max(1, Math.min(34, jornadaAtual + delta));
+      document.getElementById('jornada-label').textContent = `J ${jornadaAtual}`;
+      document.getElementById('btn-ant').disabled  = jornadaAtual <= 1;
+      document.getElementById('btn-prox').disabled = jornadaAtual >= 34;
+      carregarPontuacoes();
+    }
+
+    // ── Carregar pontuações ────────────────────────────────
+    async function carregarPontuacoes() {
+      document.getElementById('tabela-classificacao').innerHTML =
+        `<tr><td colspan="3"><div class="loading-centro"><div class="spinner"></div></div></td></tr>`;
+      document.getElementById('podio').innerHTML = '';
+
+      try {
+        const pontuacoes = await API.jornadas.pontuacoes(jornadaAtual);
+        todasPontuacoes = pontuacoes;
+        construirClassificacao(pontuacoes);
+      } catch {
+        document.getElementById('tabela-classificacao').innerHTML =
+          `<tr><td colspan="3"><p style="padding:2rem;text-align:center;color:var(--cinzento)">Não há pontuações para a jornada ${jornadaAtual}.</p></td></tr>`;
+      }
+    }
+
+    // ── Construir classificação ────────────────────────────
+    function construirClassificacao(pontuacoes) {
+      // Agregar pontos por utilizador/equipa
+      const porUtilizador = {};
+      pontuacoes.forEach(p => {
+        const uid = p.utilizador_id || p.jogador_id; // adapta ao formato do backend
+        if (!porUtilizador[uid]) porUtilizador[uid] = { total: 0, nome: p.nome || uid };
+        porUtilizador[uid].total += (p.pontuacao || 0);
+      });
+
+      const ranking = Object.entries(porUtilizador)
+        .map(([id, d]) => ({ id, nome: d.nome, total: d.total }))
+        .sort((a, b) => b.total - a.total);
+
+      renderizarPodio(ranking);
+      renderizarTabela(ranking);
+    }
+
+    function renderizarPodio(ranking) {
+      const top = ranking.slice(0, 3);
+      if (top.length < 1) { document.getElementById('podio').innerHTML = ''; return; }
+
+      // Ordem visual: 2º | 1º | 3º
+      const ordem = [top[1], top[0], top[2]].filter(Boolean);
+      const classes = top[1] ? ['podio-2', 'podio-1', 'podio-3'] : ['podio-1', 'podio-3'];
+      const medalhas = ['🥈', '🥇', '🥉'];
+
+      document.getElementById('podio').innerHTML = ordem.map((u, i) => {
+        const cls = classes[i];
+        const medalha = medalhas[i];
+        return `
+          <div class="podio-item ${cls}">
+            <div class="podio-nome">${u.nome}</div>
+            <div class="podio-pts">${u.total} pts</div>
+            <div class="podio-pedestal">
+              <div class="podio-posicao">${medalha}</div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function renderizarTabela(ranking) {
+      if (!ranking.length) {
+        document.getElementById('tabela-classificacao').innerHTML =
+          `<tr><td colspan="3"><p style="padding:2rem;text-align:center;color:var(--cinzento)">Sem dados para esta jornada.</p></td></tr>`;
+        return;
+      }
+
+      const posClasses = ['top1', 'top2', 'top3'];
+      document.getElementById('tabela-classificacao').innerHTML = ranking.map((u, i) => {
+        const euRow = u.id === utilizadorId || u.nome === nomeAtual ? 'eu-row' : '';
+        const posClass = posClasses[i] || '';
+        return `
+          <tr class="${euRow}">
+            <td class="pos-col ${posClass}">${i + 1}</td>
+            <td>
+              <span style="font-weight:500">${u.nome}</span>
+              ${euRow ? ' <span style="font-size:0.7rem;color:var(--dourado);font-family:var(--fonte-mono)">(tu)</span>' : ''}
+            </td>
+            <td class="pts-col">${u.total}</td>
+          </tr>`;
+      }).join('');
+    }
+
+    // ── Init ───────────────────────────────────────────────
+    document.getElementById('jornada-label').textContent = `J ${jornadaAtual}`;
+    document.getElementById('btn-ant').disabled  = jornadaAtual <= 1;
+    document.getElementById('btn-prox').disabled = jornadaAtual >= 34;
+    carregarPontuacoes();
+  </script>
+</body>
+</html>
