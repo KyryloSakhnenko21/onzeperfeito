@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OnzePerfeito — Mercado</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .mercado-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 2rem 0 1.25rem;
+    }
+    .filtros {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      align-items: center;
+      background: rgba(15,77,46,0.4);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: var(--raio-grande);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .filtros input[type="text"],
+    .filtros select {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: var(--raio);
+      color: var(--branco);
+      font-family: var(--fonte-corpo);
+      font-size: 0.875rem;
+      padding: 0.5rem 0.85rem;
+      flex: 1;
+      min-width: 140px;
+    }
+    .filtros input:focus, .filtros select:focus { outline: none; border-color: var(--dourado); }
+    .filtros input::placeholder { color: rgba(245,245,240,0.3); }
+    .filtros select option { background: var(--verde-escuro); }
+    .saldo-topo { display: flex; align-items: center; gap: 0.6rem; font-size: 0.875rem; }
+    .tabela-wrapper { overflow-x: auto; border-radius: var(--raio-grande); border: 1px solid rgba(201,168,76,0.15); }
+    .tabela { min-width: 640px; }
+    .jogador-cell { display: flex; align-items: center; gap: 0.65rem; }
+    .nome-jogador { font-weight: 500; font-size: 0.9rem; }
+    .clube-cell { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: rgba(245,245,240,0.7); white-space: nowrap; }
+    .preco-col { font-family: var(--fonte-mono); font-size: 0.9rem; color: var(--dourado); }
+    .media-col { font-family: var(--fonte-mono); font-size: 0.85rem; }
+    .paginacao { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 1.25rem; }
+    .paginacao button {
+      background: rgba(15,77,46,0.4); border: 1px solid rgba(201,168,76,0.2);
+      border-radius: var(--raio); color: var(--branco); font-family: var(--fonte-corpo);
+      font-size: 0.85rem; padding: 0.4rem 0.85rem; cursor: pointer; transition: all var(--transicao);
+    }
+    .paginacao button:hover { border-color: var(--dourado); color: var(--dourado); }
+    .paginacao button:disabled { opacity: 0.3; cursor: not-allowed; }
+    .paginacao .info-pagina { font-size: 0.8rem; color: var(--cinzento); font-family: var(--fonte-mono); }
+    .btn-adicionar { padding: 0.35rem 0.8rem; font-size: 0.78rem; }
+    .na-equipa { font-size: 0.75rem; color: var(--sucesso); font-family: var(--fonte-mono); }
+    .contador-resultados { font-size: 0.8rem; color: var(--cinzento); font-family: var(--fonte-mono); margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div id="navbar-placeholder"></div>
+  <div class="page-content">
+    <div class="mercado-header">
+      <div>
+        <h2>Mercado</h2>
+        <p class="text-cinzento text-sm">487 jogadores da Liga Portugal 25/26</p>
+      </div>
+      <div class="saldo-topo">
+        <span class="text-cinzento">Saldo:</span>
+        <span class="saldo-display" id="saldo-display">—<span>M€</span></span>
+      </div>
+    </div>
+
+    <div id="alerta" class="alerta"></div>
+
+    <div class="filtros">
+      <input type="text" id="filtro-nome" placeholder="🔍 Procurar jogador..." oninput="aplicarFiltros()" />
+      <select id="filtro-posicao" onchange="aplicarFiltros()">
+        <option value="">Todas as posições</option>
+        <option value="guarda-redes">Guarda-Redes</option>
+        <option value="defesa">Defesa</option>
+        <option value="medio">Médio</option>
+        <option value="avancado">Avançado</option>
+      </select>
+      <select id="filtro-clube" onchange="aplicarFiltros()">
+        <option value="">Todos os clubes</option>
+      </select>
+      <select id="filtro-ordem" onchange="aplicarFiltros()">
+        <option value="nome">Nome A-Z</option>
+        <option value="preco-desc">Preço ↓</option>
+        <option value="preco-asc">Preço ↑</option>
+        <option value="media-desc">Média ↓</option>
+      </select>
+    </div>
+
+    <p class="contador-resultados" id="contador"></p>
+
+    <div class="tabela-wrapper">
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th>Jogador</th>
+            <th>Clube</th>
+            <th>Posição</th>
+            <th>Preço</th>
+            <th>Média</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tabela-corpo">
+          <tr><td colspan="6"><div class="loading-centro"><div class="spinner"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="paginacao" id="paginacao"></div>
+  </div>
+
+  <script src="navbar.js"></script>
+  <script src="auth.js"></script>
+  <script src="api.js"></script>
+  <script src="avatares.js"></script>
+  <script>
+    if (!Auth.exigirAutenticacao()) throw new Error();
+    Auth.preencherNavbar();
+
+    const utilizadorId = Auth.obterIDdoToken();
+    const POR_PAGINA = 20;
+    let todosJogadores = [], jogadoresFiltrados = [], equipaAtual = [];
+    let saldoAtual = 100, paginaAtual = 1;
+
+    (async () => {
+      const [jogadores, equipa] = await Promise.all([
+        API.jogadores.listar().catch(() => []),
+        API.equipas.obter(utilizadorId).catch(() => ({})),
+      ]);
+      todosJogadores = jogadores;
+      equipaAtual = equipa.jogadores || [];
+      const gasto = equipaAtual.reduce((s, j) => s + (j.preco || 0), 0);
+      saldoAtual = Math.max(0, 100 - gasto);
+      document.getElementById('saldo-display').innerHTML = `${saldoAtual.toFixed(1)}<span>M€</span>`;
+
+      const clubes = [...new Set(jogadores.map(j => j.clube))].sort();
+      const sel = document.getElementById('filtro-clube');
+      clubes.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
+      aplicarFiltros();
+    })();
+
+    function aplicarFiltros() {
+      const nome    = document.getElementById('filtro-nome').value.toLowerCase();
+      const posicao = document.getElementById('filtro-posicao').value;
+      const clube   = document.getElementById('filtro-clube').value;
+      const ordem   = document.getElementById('filtro-ordem').value;
+
+      jogadoresFiltrados = todosJogadores.filter(j => {
+        if (nome    && !j.nome.toLowerCase().includes(nome)) return false;
+        if (posicao && j.posicao !== posicao)                return false;
+        if (clube   && j.clube !== clube)                    return false;
+        return true;
+      }).sort((a, b) => {
+        if (ordem === 'nome')       return a.nome.localeCompare(b.nome);
+        if (ordem === 'preco-desc') return b.preco - a.preco;
+        if (ordem === 'preco-asc')  return a.preco - b.preco;
+        if (ordem === 'media-desc') return b.media_pontuacao - a.media_pontuacao;
+        return 0;
+      });
+
+      paginaAtual = 1;
+      document.getElementById('contador').textContent =
+        `${jogadoresFiltrados.length} jogador${jogadoresFiltrados.length !== 1 ? 'es' : ''} encontrado${jogadoresFiltrados.length !== 1 ? 's' : ''}`;
+      renderizar();
+    }
+
+    function criarLinha(j) {
+      const naEquipa = new Set(equipaAtual.map(x => x.id)).has(j.id);
+      const tr = document.createElement('tr');
+
+      // Jogador — avatar + nome
+      const tdJ = document.createElement('td');
+      const jogCell = document.createElement('div');
+      jogCell.className = 'jogador-cell';
+      jogCell.appendChild(Avatares.criarAvatarJogador(j, 36));
+      const info = document.createElement('div');
+      info.innerHTML = `<div class="nome-jogador">${j.nome}</div>`;
+      jogCell.appendChild(info);
+      tdJ.appendChild(jogCell);
+
+      // Clube — logo + nome
+      const tdC = document.createElement('td');
+      const clubCell = document.createElement('div');
+      clubCell.className = 'clube-cell';
+      clubCell.appendChild(Avatares.criarLogoClube(j.clube, 22));
+      clubCell.appendChild(document.createTextNode(j.clube));
+      tdC.appendChild(clubCell);
+
+      // Posição
+      const tdP = document.createElement('td');
+      tdP.innerHTML = API.badgePosicao(j.posicao);
+
+      // Preço
+      const tdPr = document.createElement('td');
+      tdPr.className = 'preco-col';
+      tdPr.textContent = API.formatarPreco(j.preco);
+
+      // Média
+      const tdM = document.createElement('td');
+      tdM.className = 'media-col';
+      tdM.textContent = API.formatarMedia(j.media_pontuacao);
+
+      // Ação
+      const tdA = document.createElement('td');
+      if (naEquipa) {
+        tdA.innerHTML = '<span class="na-equipa">✓ Na equipa</span>';
+      } else {
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-primario btn-adicionar';
+        btn.textContent = '+ Adicionar';
+        btn.onclick = () => adicionarJogador(j.id);
+        tdA.appendChild(btn);
+      }
+
+      tr.append(tdJ, tdC, tdP, tdPr, tdM, tdA);
+      return tr;
+    }
+
+    function renderizar() {
+      const inicio = (paginaAtual - 1) * POR_PAGINA;
+      const pagina = jogadoresFiltrados.slice(inicio, inicio + POR_PAGINA);
+      const tbody = document.getElementById('tabela-corpo');
+      tbody.innerHTML = '';
+
+      if (!pagina.length) {
+        tbody.innerHTML = `<tr><td colspan="6"><p style="text-align:center;padding:2rem;color:var(--cinzento)">Nenhum jogador encontrado.</p></td></tr>`;
+        document.getElementById('paginacao').innerHTML = '';
+        return;
+      }
+
+      pagina.forEach(j => tbody.appendChild(criarLinha(j)));
+      renderizarPaginacao();
+    }
+
+    function renderizarPaginacao() {
+      const total = Math.ceil(jogadoresFiltrados.length / POR_PAGINA);
+      if (total <= 1) { document.getElementById('paginacao').innerHTML = ''; return; }
+      document.getElementById('paginacao').innerHTML =
+        `<button onclick="irPagina(${paginaAtual-1})" ${paginaAtual===1?'disabled':''}>‹</button>
+         <span class="info-pagina">${paginaAtual} / ${total}</span>
+         <button onclick="irPagina(${paginaAtual+1})" ${paginaAtual===total?'disabled':''}>›</button>`;
+    }
+
+    function irPagina(n) { paginaAtual = n; renderizar(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+    async function adicionarJogador(id) {
+      if (equipaAtual.length >= 15) { API.mostrarAlerta('alerta','A tua equipa já tem 15 jogadores.','erro'); return; }
+      const j = todosJogadores.find(x => x.id === id);
+      if (!j) return;
+      if (j.preco > saldoAtual) { API.mostrarAlerta('alerta',`Saldo insuficiente. Precisas de ${API.formatarPreco(j.preco)} mas tens ${saldoAtual.toFixed(1)}M€.`,'erro'); return; }
+      if (equipaAtual.find(x => x.id === id)) { API.mostrarAlerta('alerta','Este jogador já está na tua equipa.','info'); return; }
+
+      equipaAtual.push(j);
+      saldoAtual -= j.preco;
+      try {
+        await API.equipas.guardar(utilizadorId, equipaAtual);
+        document.getElementById('saldo-display').innerHTML = `${saldoAtual.toFixed(1)}<span>M€</span>`;
+        API.mostrarAlerta('alerta', `${j.nome} adicionado à equipa!`, 'sucesso');
+        renderizar();
+      } catch (e) {
+        equipaAtual.pop(); saldoAtual += j.preco;
+        API.mostrarAlerta('alerta', e.message || 'Erro ao guardar equipa.', 'erro');
+      }
+    }
+  </script>
+</body>
+</html>

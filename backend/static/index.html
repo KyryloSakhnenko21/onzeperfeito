@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OnzePerfeito — Entrar</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+
+    .auth-wrapper {
+      width: 100%;
+      max-width: 440px;
+      padding: 1.5rem;
+    }
+
+    .auth-logo {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .auth-logo h1 {
+      font-size: 3rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .auth-logo p {
+      font-size: 0.8rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cinzento);
+    }
+
+    .auth-card {
+      background: rgba(15,77,46,0.45);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: var(--raio-grande);
+      padding: 2rem;
+      backdrop-filter: blur(12px);
+    }
+
+    .auth-tabs {
+      display: flex;
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+      margin-bottom: 1.75rem;
+    }
+
+    .auth-tab {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--cinzento);
+      font-family: var(--fonte-corpo);
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: color var(--transicao);
+      position: relative;
+    }
+
+    .auth-tab::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 2px;
+      background: var(--dourado);
+      transform: scaleX(0);
+      transition: transform var(--transicao);
+    }
+
+    .auth-tab.ativo { color: var(--dourado); }
+    .auth-tab.ativo::after { transform: scaleX(1); }
+
+    .auth-form { display: none; }
+    .auth-form.ativo { display: block; }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 1.25rem;
+      font-size: 0.8rem;
+      color: var(--cinzento);
+    }
+
+    .btn-auth {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.8rem;
+      font-size: 0.95rem;
+    }
+
+    .campo-password { position: relative; }
+    .campo-password input { padding-right: 2.8rem; }
+    .toggle-password {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--cinzento);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0;
+      line-height: 1;
+    }
+    .toggle-password:hover { color: var(--dourado); }
+  </style>
+</head>
+<body>
+  <div class="auth-wrapper">
+
+    <div class="auth-logo">
+      <h1>ONZE<span style="color:var(--branco)">PERFEITO</span></h1>
+      <p>Liga Portugal Fantasy Football</p>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab ativo" onclick="mudarTab('login')">Entrar</button>
+        <button class="auth-tab" onclick="mudarTab('registo')">Registar</button>
+      </div>
+
+      <!-- Alerta global -->
+      <div id="alerta" class="alerta"></div>
+
+      <!-- Formulário Login -->
+      <div id="form-login" class="auth-form ativo">
+        <div class="form-grupo">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" placeholder="o.teu@email.com" autocomplete="email" />
+        </div>
+        <div class="form-grupo">
+          <label for="login-password">Password</label>
+          <div class="campo-password">
+            <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
+            <button class="toggle-password" onclick="togglePassword('login-password', this)" type="button">👁</button>
+          </div>
+        </div>
+        <button class="btn btn-primario btn-auth" id="btn-login" onclick="fazerLogin()">
+          Entrar
+        </button>
+      </div>
+
+      <!-- Formulário Registo -->
+      <div id="form-registo" class="auth-form">
+        <div class="form-grupo">
+          <label for="reg-nome">Nome</label>
+          <input type="text" id="reg-nome" placeholder="O teu nome" autocomplete="name" />
+        </div>
+        <div class="form-grupo">
+          <label for="reg-email">Email</label>
+          <input type="email" id="reg-email" placeholder="o.teu@email.com" autocomplete="email" />
+        </div>
+        <div class="form-grupo">
+          <label for="reg-password">Password</label>
+          <div class="campo-password">
+            <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" />
+            <button class="toggle-password" onclick="togglePassword('reg-password', this)" type="button">👁</button>
+          </div>
+        </div>
+        <button class="btn btn-primario btn-auth" id="btn-registo" onclick="fazerRegisto()">
+          Criar Conta
+        </button>
+      </div>
+
+      <p class="auth-footer">
+        Ao entrares, aceitas os termos do projeto académico OnzePerfeito.
+      </p>
+    </div>
+
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="api.js"></script>
+  <script>
+    // Redireciona para dashboard se já estiver autenticado
+    Auth.redireccionarSeAutenticado();
+
+    function mudarTab(tab) {
+      document.querySelectorAll('.auth-tab').forEach((el, i) => {
+        el.classList.toggle('ativo', (i === 0 && tab === 'login') || (i === 1 && tab === 'registo'));
+      });
+      document.getElementById('form-login').classList.toggle('ativo', tab === 'login');
+      document.getElementById('form-registo').classList.toggle('ativo', tab === 'registo');
+      document.getElementById('alerta').className = 'alerta';
+    }
+
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const visivel = input.type === 'text';
+      input.type = visivel ? 'password' : 'text';
+      btn.textContent = visivel ? '👁' : '🙈';
+    }
+
+    async function fazerLogin() {
+      const email    = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const btn      = document.getElementById('btn-login');
+
+      if (!email || !password) {
+        API.mostrarAlerta('alerta', 'Preenche todos os campos.', 'erro');
+        return;
+      }
+
+      API.setBotaoCarregando(btn, true);
+      try {
+        const dados = await API.auth.login(email, password);
+        // O backend retorna { token, nome } — o id está no payload JWT
+        const payload = JSON.parse(atob(dados.token.split('.')[1]));
+        Auth.guardarSessao(dados.token, dados.nome, payload.id);
+        window.location.href = 'dashboard.html';
+      } catch (e) {
+        API.mostrarAlerta('alerta', e.message || 'Erro ao entrar. Tenta novamente.', 'erro');
+        API.setBotaoCarregando(btn, false, 'Entrar');
+      }
+    }
+
+    async function fazerRegisto() {
+      const nome     = document.getElementById('reg-nome').value.trim();
+      const email    = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const btn      = document.getElementById('btn-registo');
+
+      if (!nome || !email || !password) {
+        API.mostrarAlerta('alerta', 'Preenche todos os campos.', 'erro');
+        return;
+      }
+      if (password.length < 6) {
+        API.mostrarAlerta('alerta', 'A password deve ter pelo menos 6 caracteres.', 'erro');
+        return;
+      }
+
+      API.setBotaoCarregando(btn, true);
+      try {
+        await API.auth.registar(nome, email, password);
+        API.mostrarAlerta('alerta', 'Conta criada! Podes fazer login agora.', 'sucesso');
+        setTimeout(() => mudarTab('login'), 1500);
+      } catch (e) {
+        API.mostrarAlerta('alerta', e.message || 'Erro ao registar. Tenta novamente.', 'erro');
+      } finally {
+        API.setBotaoCarregando(btn, false, 'Criar Conta');
+      }
+    }
+
+    // Submeter com Enter
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      if (document.getElementById('form-login').classList.contains('ativo')) fazerLogin();
+      else fazerRegisto();
+    });
+  </script>
+</body>
+</html>

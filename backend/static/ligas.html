@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OnzePerfeito — Ligas</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .ligas-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 2rem 0 1.5rem;
+    }
+
+    .ligas-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 700px) { .ligas-grid { grid-template-columns: 1fr; } }
+
+    .painel {
+      background: rgba(15,77,46,0.4);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: var(--raio-grande);
+      padding: 1.5rem;
+    }
+
+    .painel-titulo {
+      font-family: var(--fonte-display);
+      font-size: 1.1rem;
+      color: var(--dourado);
+      letter-spacing: 0.06em;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Liga card */
+    .liga-card {
+      background: rgba(10,46,26,0.5);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: var(--raio);
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      transition: border-color var(--transicao);
+    }
+
+    .liga-card:hover { border-color: rgba(201,168,76,0.4); }
+
+    .liga-nome {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .liga-meta {
+      font-size: 0.75rem;
+      color: var(--cinzento);
+      font-family: var(--fonte-mono);
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .liga-codigo {
+      display: inline-block;
+      font-family: var(--fonte-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      color: var(--dourado);
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 4px;
+      padding: 0.2rem 0.6rem;
+      margin-top: 0.4rem;
+      cursor: pointer;
+      transition: background var(--transicao);
+    }
+
+    .liga-codigo:hover { background: rgba(201,168,76,0.2); }
+    .liga-codigo::before { content: '🔑 '; font-size: 0.75rem; }
+
+    /* Formulários inline */
+    .form-inline {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .form-inline input {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: var(--raio);
+      color: var(--branco);
+      font-family: var(--fonte-corpo);
+      font-size: 0.9rem;
+      padding: 0.6rem 0.9rem;
+      transition: border-color var(--transicao);
+    }
+
+    .form-inline input:focus {
+      outline: none;
+      border-color: var(--dourado);
+    }
+
+    .form-inline input::placeholder { color: rgba(245,245,240,0.3); }
+
+    hr.divider-form {
+      border: none;
+      border-top: 1px solid rgba(201,168,76,0.15);
+      margin: 1.25rem 0;
+    }
+
+    .empty-ligas {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--cinzento);
+      font-size: 0.85rem;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: var(--verde-medio);
+      border: 1px solid var(--dourado);
+      border-radius: var(--raio);
+      padding: 0.75rem 1.25rem;
+      color: var(--dourado);
+      font-size: 0.875rem;
+      font-weight: 500;
+      z-index: 999;
+      animation: slideIn 0.25s ease;
+      display: none;
+    }
+
+    @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  </style>
+</head>
+<body>
+  <div id="navbar-placeholder"></div>
+
+  <div class="page-content">
+
+    <div class="ligas-header">
+      <div>
+        <h2>Ligas</h2>
+        <p class="text-cinzento text-sm">Compete com outros jogadores</p>
+      </div>
+    </div>
+
+    <div id="alerta" class="alerta"></div>
+
+    <div class="ligas-grid">
+
+      <!-- Coluna esquerda: Liga Global + As minhas ligas -->
+      <div>
+        <!-- Liga Global -->
+        <div class="painel" style="margin-bottom:1.25rem;">
+          <p class="painel-titulo">🌍 Liga Global</p>
+          <div id="liga-global-container">
+            <div class="loading-centro"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+        <!-- As minhas ligas privadas -->
+        <div class="painel">
+          <p class="painel-titulo">🏆 As Minhas Ligas</p>
+          <div id="minhas-ligas-container">
+            <div class="loading-centro"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna direita: Criar + Entrar -->
+      <div>
+        <div class="painel">
+          <p class="painel-titulo">➕ Criar Liga Privada</p>
+          <div class="form-inline">
+            <input type="text" id="nova-liga-nome" placeholder="Nome da liga" maxlength="40" />
+            <button class="btn btn-primario" id="btn-criar" onclick="criarLiga()">Criar Liga</button>
+          </div>
+
+          <hr class="divider-form" />
+
+          <p class="painel-titulo">🔗 Entrar numa Liga</p>
+          <div class="form-inline">
+            <input type="text" id="codigo-entrada" placeholder="Código de 6 caracteres" maxlength="6"
+                   style="text-transform:uppercase;letter-spacing:0.12em;" />
+            <button class="btn btn-secundario" id="btn-entrar" onclick="entrarLiga()">Entrar</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="navbar.js"></script>
+  <script src="auth.js"></script>
+  <script src="api.js"></script>
+  <script>
+    if (!Auth.exigirAutenticacao()) throw new Error();
+    Auth.preencherNavbar();
+
+    const utilizadorId = Auth.obterIDdoToken();
+
+    function mostrarToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3000);
+    }
+
+    function copiarCodigo(codigo) {
+      navigator.clipboard.writeText(codigo).then(() => mostrarToast(`Código ${codigo} copiado!`));
+    }
+
+    // ── Liga Global ────────────────────────────────────────
+    async function carregarLigaGlobal() {
+      const container = document.getElementById('liga-global-container');
+      try {
+        const ligas = await API.ligas.listar('global');
+        if (!ligas.length) {
+          container.innerHTML = `<p class="empty-ligas">A liga global ainda não foi criada.</p>`;
+          return;
+        }
+        const liga = ligas[0];
+        container.innerHTML = `
+          <div class="liga-card">
+            <div class="liga-nome">${liga.nome || 'Liga Global OnzePerfeito'}</div>
+            <div class="liga-meta">
+              <span>👥 ${(liga.membros || []).length} participantes</span>
+              <span>Aberta a todos</span>
+            </div>
+          </div>`;
+      } catch {
+        container.innerHTML = `<p class="empty-ligas">Não foi possível carregar a liga global.</p>`;
+      }
+    }
+
+    // ── Minhas ligas privadas ──────────────────────────────
+    async function carregarMinhasLigas() {
+      const container = document.getElementById('minhas-ligas-container');
+      try {
+        const ligas = await API.ligas.listarPrivadas();
+        const minhas = ligas.filter(l =>
+          (l.membros || []).includes(utilizadorId) || l.criador_id === utilizadorId
+        );
+
+        if (!minhas.length) {
+          container.innerHTML = `<p class="empty-ligas">Ainda não estás em nenhuma liga privada.<br>Cria uma ou entra com um código.</p>`;
+          return;
+        }
+
+        container.innerHTML = minhas.map(l => `
+          <div class="liga-card">
+            <div class="liga-nome">${l.nome}</div>
+            <div class="liga-meta">
+              <span>👥 ${(l.membros || []).length} membros</span>
+              ${l.criador_id === utilizadorId ? '<span style="color:var(--dourado)">Tu criaste</span>' : ''}
+            </div>
+            <div class="liga-codigo" onclick="copiarCodigo('${l.codigo}')" title="Clica para copiar">
+              ${l.codigo}
+            </div>
+          </div>`).join('');
+      } catch {
+        container.innerHTML = `<p class="empty-ligas">Não foi possível carregar as ligas.</p>`;
+      }
+    }
+
+    // ── Criar liga ─────────────────────────────────────────
+    async function criarLiga() {
+      const nome = document.getElementById('nova-liga-nome').value.trim();
+      const btn  = document.getElementById('btn-criar');
+
+      if (!nome) {
+        API.mostrarAlerta('alerta', 'Indica um nome para a liga.', 'erro');
+        return;
+      }
+
+      API.setBotaoCarregando(btn, true);
+      try {
+        const liga = await API.ligas.criar(nome, utilizadorId);
+        document.getElementById('nova-liga-nome').value = '';
+        API.mostrarAlerta('alerta', `Liga "${liga.nome}" criada! Código: ${liga.codigo}`, 'sucesso');
+        mostrarToast(`Código da liga: ${liga.codigo}`);
+        await carregarMinhasLigas();
+      } catch (e) {
+        API.mostrarAlerta('alerta', e.message || 'Erro ao criar liga.', 'erro');
+      } finally {
+        API.setBotaoCarregando(btn, false, 'Criar Liga');
+      }
+    }
+
+    // ── Entrar em liga ─────────────────────────────────────
+    async function entrarLiga() {
+      const codigo = document.getElementById('codigo-entrada').value.trim().toUpperCase();
+      const btn    = document.getElementById('btn-entrar');
+
+      if (codigo.length !== 6) {
+        API.mostrarAlerta('alerta', 'O código deve ter exatamente 6 caracteres.', 'erro');
+        return;
+      }
+
+      API.setBotaoCarregando(btn, true);
+      try {
+        await API.ligas.entrar(codigo, utilizadorId);
+        document.getElementById('codigo-entrada').value = '';
+        API.mostrarAlerta('alerta', 'Entraste na liga com sucesso!', 'sucesso');
+        await carregarMinhasLigas();
+      } catch (e) {
+        API.mostrarAlerta('alerta', e.message || 'Código inválido ou liga não encontrada.', 'erro');
+      } finally {
+        API.setBotaoCarregando(btn, false, 'Entrar');
+      }
+    }
+
+    // Inicializar
+    carregarLigaGlobal();
+    carregarMinhasLigas();
+  </script>
+</body>
+</html>
