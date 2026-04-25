@@ -1,11 +1,11 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 from routes.auth import auth_bp
 from routes.jogadores import jogadores_bp
 from routes.equipas import equipas_bp
 from routes.ligas import ligas_bp
 from routes.jornadas import jornadas_bp
-from flask import send_from_directory
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -28,10 +28,11 @@ def index():
 def health():
     return jsonify({"status": "healthy"})
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=False)
-
 @app.route('/app')
 @app.route('/app/<path:filename>')
 def frontend(filename='index.html'):
-    return send_from_directory('static', filename)
+    static_dir = os.path.join(os.path.dirname(__file__), 'static')
+    return send_from_directory(static_dir, filename)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8000, debug=False)
