@@ -12,23 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python version
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Create virtual environment and install dependencies
-        run: |
-          cd backend
-          python -m venv antenv
-          source antenv/bin/activate
-          pip install --upgrade pip
-          pip install -r requirements.txt
-
       - name: Zip artifact for deployment
         run: |
           cd backend
-          zip -r ../release.zip . -x "*.pyc" -x "__pycache__/*" -x ".git/*"
+          zip -r ../release.zip . -x "*.pyc" -x "__pycache__/*" -x "antenv/*" -x ".git/*"
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
