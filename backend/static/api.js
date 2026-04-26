@@ -6,7 +6,7 @@
  * URL base: configurar consoante o ambiente.
  */
 
-const API_BASE = 'https://onzeperfeito-app-dravg3ajcacbftdh.francecentral-01.azurewebsites.net';
+const API_BASE = 'https://onzeperfeito-app.azurewebsites.net';
 
 const API = (() => {
 
