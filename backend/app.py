@@ -31,7 +31,8 @@ def health():
 @app.route('/app')
 @app.route('/app/<path:filename>')
 def frontend(filename='index.html'):
-    static_dir = os.path.join(os.path.dirname(__file__), 'static')
+    base = os.path.dirname(os.path.abspath(__file__))
+    static_dir = os.path.join(base, 'static')
     return send_from_directory(static_dir, filename)
 
 if __name__ == '__main__':
