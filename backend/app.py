@@ -35,5 +35,21 @@ def frontend(filename='index.html'):
     static_dir = os.path.join(base, 'static')
     return send_from_directory(static_dir, filename)
 
+@app.route('/debug')
+def debug():
+    import os
+    base = os.path.dirname(os.path.abspath(__file__))
+    static_dir = os.path.join(base, 'static')
+    try:
+        files = os.listdir(static_dir)
+    except Exception as e:
+        files = str(e)
+    return jsonify({
+        "file": __file__,
+        "base": base,
+        "static_dir": static_dir,
+        "static_files": files
+    })
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=False)
