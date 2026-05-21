@@ -6,7 +6,6 @@
   <title>OnzePerfeito — Ligas</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* ── Layout base ─────────────────────────────────────── */
     .ligas-header {
       display: flex;
       align-items: flex-end;
@@ -42,30 +41,17 @@
       gap: 0.5rem;
     }
 
-    /* ── Liga card ───────────────────────────────────────── */
+    /* Liga card */
     .liga-card {
       background: rgba(10,46,26,0.5);
       border: 1px solid rgba(201,168,76,0.15);
       border-radius: var(--raio);
       padding: 1rem;
       margin-bottom: 0.75rem;
-      transition: border-color var(--transicao), background var(--transicao);
-      cursor: pointer;
+      transition: border-color var(--transicao);
     }
 
-    .liga-card:hover {
-      border-color: rgba(201,168,76,0.5);
-      background: rgba(10,46,26,0.75);
-    }
-
-    .liga-card-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 0.75rem;
-    }
-
-    .liga-card-info { flex: 1; }
+    .liga-card:hover { border-color: rgba(201,168,76,0.4); }
 
     .liga-nome {
       font-weight: 600;
@@ -100,27 +86,7 @@
     .liga-codigo:hover { background: rgba(201,168,76,0.2); }
     .liga-codigo::before { content: '🔑 '; font-size: 0.75rem; }
 
-    .btn-ver-liga {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.75rem;
-      color: var(--dourado);
-      background: rgba(201,168,76,0.1);
-      border: 1px solid rgba(201,168,76,0.25);
-      border-radius: 4px;
-      padding: 0.3rem 0.7rem;
-      white-space: nowrap;
-      font-family: var(--fonte-mono);
-      letter-spacing: 0.04em;
-      cursor: pointer;
-      transition: background var(--transicao);
-      flex-shrink: 0;
-    }
-
-    .btn-ver-liga:hover { background: rgba(201,168,76,0.25); }
-
-    /* ── Formulários inline ──────────────────────────────── */
+    /* Formulários inline */
     .form-inline {
       display: flex;
       flex-direction: column;
@@ -158,7 +124,6 @@
       font-size: 0.85rem;
     }
 
-    /* ── Toast ───────────────────────────────────────────── */
     .toast {
       position: fixed;
       bottom: 1.5rem;
@@ -175,134 +140,7 @@
       display: none;
     }
 
-    @keyframes slideIn {
-      from { transform: translateY(20px); opacity: 0; }
-      to   { transform: translateY(0);    opacity: 1; }
-    }
-
-    /* ── Vista de detalhe da liga ────────────────────────── */
-    #vista-detalhe { display: none; }
-
-    .detalhe-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin: 2rem 0 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .btn-voltar {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.85rem;
-      color: var(--dourado);
-      background: rgba(201,168,76,0.08);
-      border: 1px solid rgba(201,168,76,0.3);
-      border-radius: var(--raio);
-      padding: 0.45rem 0.9rem;
-      cursor: pointer;
-      font-family: var(--fonte-corpo);
-      transition: background var(--transicao);
-      text-decoration: none;
-    }
-
-    .btn-voltar:hover { background: rgba(201,168,76,0.18); }
-
-    .detalhe-titulo-bloco { flex: 1; }
-    .detalhe-titulo-bloco h2 { margin-bottom: 0.15rem; }
-
-    /* ── Tabela de classificação ─────────────────────────── */
-    .tabela-classificacao {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-
-    .tabela-classificacao thead tr {
-      background: rgba(201,168,76,0.1);
-      border-bottom: 1px solid rgba(201,168,76,0.2);
-    }
-
-    .tabela-classificacao th {
-      padding: 0.65rem 1rem;
-      text-align: left;
-      font-family: var(--fonte-display);
-      font-size: 0.8rem;
-      color: var(--dourado);
-      letter-spacing: 0.07em;
-    }
-
-    .tabela-classificacao th:last-child,
-    .tabela-classificacao td:last-child { text-align: right; }
-
-    .tabela-classificacao tbody tr {
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      transition: background var(--transicao);
-    }
-
-    .tabela-classificacao tbody tr:hover {
-      background: rgba(201,168,76,0.05);
-    }
-
-    .tabela-classificacao tbody tr.linha-minha {
-      background: rgba(201,168,76,0.08);
-      border-left: 3px solid var(--dourado);
-    }
-
-    .tabela-classificacao td {
-      padding: 0.75rem 1rem;
-      vertical-align: middle;
-    }
-
-    .col-pos {
-      width: 3rem;
-      font-family: var(--fonte-mono);
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--cinzento);
-    }
-
-    .col-pos.top-3 { color: var(--dourado); }
-
-    .col-nome {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    .badge-eu {
-      display: inline-block;
-      font-size: 0.65rem;
-      font-family: var(--fonte-mono);
-      color: var(--verde-escuro);
-      background: var(--dourado);
-      border-radius: 3px;
-      padding: 0.1rem 0.4rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      vertical-align: middle;
-    }
-
-    .col-pontos {
-      font-family: var(--fonte-mono);
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--dourado);
-      text-align: right;
-    }
-
-    .podio-medalha { font-size: 1.15rem; }
-
-    /* Sem dados */
-    .sem-pontuacoes {
-      text-align: center;
-      padding: 2.5rem 1rem;
-      color: var(--cinzento);
-      font-size: 0.85rem;
-    }
-
-    .sem-pontuacoes .icone-grande { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   </style>
 </head>
 <body>
@@ -310,87 +148,58 @@
 
   <div class="page-content">
 
+    <div class="ligas-header">
+      <div>
+        <h2>Ligas</h2>
+        <p class="text-cinzento text-sm">Compete com outros jogadores</p>
+      </div>
+    </div>
+
     <div id="alerta" class="alerta"></div>
 
-    <!-- ══════════════════════════════════════════════════════
-         VISTA LISTA (default)
-    ══════════════════════════════════════════════════════ -->
-    <div id="vista-lista">
-      <div class="ligas-header">
-        <div>
-          <h2>Ligas</h2>
-          <p class="text-cinzento text-sm">Compete com outros jogadores</p>
-        </div>
-      </div>
+    <div class="ligas-grid">
 
-      <div class="ligas-grid">
-
-        <!-- Coluna esquerda: Liga Global + As minhas ligas -->
-        <div>
-          <!-- Liga Global -->
-          <div class="painel" style="margin-bottom:1.25rem;">
-            <p class="painel-titulo">🌍 Liga Global</p>
-            <div id="liga-global-container">
-              <div class="loading-centro"><div class="spinner"></div></div>
-            </div>
-          </div>
-
-          <!-- As minhas ligas privadas -->
-          <div class="painel">
-            <p class="painel-titulo">🏆 As Minhas Ligas</p>
-            <div id="minhas-ligas-container">
-              <div class="loading-centro"><div class="spinner"></div></div>
-            </div>
+      <!-- Coluna esquerda: Liga Global + As minhas ligas -->
+      <div>
+        <!-- Liga Global -->
+        <div class="painel" style="margin-bottom:1.25rem;">
+          <p class="painel-titulo">🌍 Liga Global</p>
+          <div id="liga-global-container">
+            <div class="loading-centro"><div class="spinner"></div></div>
           </div>
         </div>
 
-        <!-- Coluna direita: Criar + Entrar -->
-        <div>
-          <div class="painel">
-            <p class="painel-titulo">➕ Criar Liga Privada</p>
-            <div class="form-inline">
-              <input type="text" id="nova-liga-nome" placeholder="Nome da liga" maxlength="40" />
-              <button class="btn btn-primario" id="btn-criar" onclick="criarLiga()">Criar Liga</button>
-            </div>
-
-            <hr class="divider-form" />
-
-            <p class="painel-titulo">🔗 Entrar numa Liga</p>
-            <div class="form-inline">
-              <input type="text" id="codigo-entrada" placeholder="Código de 6 caracteres" maxlength="6"
-                     style="text-transform:uppercase;letter-spacing:0.12em;" />
-              <button class="btn btn-secundario" id="btn-entrar" onclick="entrarLiga()">Entrar</button>
-            </div>
+        <!-- As minhas ligas privadas -->
+        <div class="painel">
+          <p class="painel-titulo">🏆 As Minhas Ligas</p>
+          <div id="minhas-ligas-container">
+            <div class="loading-centro"><div class="spinner"></div></div>
           </div>
         </div>
-
       </div>
-    </div><!-- /#vista-lista -->
 
+      <!-- Coluna direita: Criar + Entrar -->
+      <div>
+        <div class="painel">
+          <p class="painel-titulo">➕ Criar Liga Privada</p>
+          <div class="form-inline">
+            <input type="text" id="nova-liga-nome" placeholder="Nome da liga" maxlength="40" />
+            <button class="btn btn-primario" id="btn-criar" onclick="criarLiga()">Criar Liga</button>
+          </div>
 
-    <!-- ══════════════════════════════════════════════════════
-         VISTA DETALHE DE LIGA
-    ══════════════════════════════════════════════════════ -->
-    <div id="vista-detalhe">
+          <hr class="divider-form" />
 
-      <div class="detalhe-header">
-        <button class="btn-voltar" onclick="voltarLista()">← Voltar às Ligas</button>
-        <div class="detalhe-titulo-bloco">
-          <h2 id="detalhe-nome"></h2>
-          <p class="text-cinzento text-sm" id="detalhe-meta"></p>
+          <p class="painel-titulo">🔗 Entrar numa Liga</p>
+          <div class="form-inline">
+            <input type="text" id="codigo-entrada" placeholder="Código de 6 caracteres" maxlength="6"
+                   style="text-transform:uppercase;letter-spacing:0.12em;" />
+            <button class="btn btn-secundario" id="btn-entrar" onclick="entrarLiga()">Entrar</button>
+          </div>
         </div>
       </div>
 
-      <div class="painel">
-        <p class="painel-titulo">🏆 Classificação</p>
-        <div id="detalhe-tabela">
-          <div class="loading-centro"><div class="spinner"></div></div>
-        </div>
-      </div>
-
-    </div><!-- /#vista-detalhe -->
-
-  </div><!-- /.page-content -->
+    </div>
+  </div>
 
   <div class="toast" id="toast"></div>
 
@@ -402,9 +211,7 @@
     Auth.preencherNavbar();
 
     const utilizadorId = Auth.obterIDdoToken();
-    const API_BASE = 'https://onzeperfeito-app.azurewebsites.net';
 
-    // ── Toast ──────────────────────────────────────────────
     function mostrarToast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg;
@@ -412,24 +219,8 @@
       setTimeout(() => { t.style.display = 'none'; }, 3000);
     }
 
-    function copiarCodigo(codigo, e) {
-      if (e) e.stopPropagation();
-      navigator.clipboard.writeText(codigo)
-        .then(() => mostrarToast(`Código ${codigo} copiado!`));
-    }
-
-    // ── Cálculo da jornada atual ───────────────────────────
-    function jornadaAtual() {
-      const inicio = new Date('2025-08-10');
-      const hoje   = new Date();
-      const semanas = Math.floor((hoje - inicio) / (7 * 24 * 60 * 60 * 1000)) + 1;
-      return Math.max(1, Math.min(semanas, 34));
-    }
-
-    // ── Navegação entre vistas ─────────────────────────────
-    function voltarLista() {
-      document.getElementById('vista-detalhe').style.display = 'none';
-      document.getElementById('vista-lista').style.display   = 'block';
+    function copiarCodigo(codigo) {
+      navigator.clipboard.writeText(codigo).then(() => mostrarToast(`Código ${codigo} copiado!`));
     }
 
     // ── Liga Global ────────────────────────────────────────
@@ -443,16 +234,11 @@
         }
         const liga = ligas[0];
         container.innerHTML = `
-          <div class="liga-card" onclick="abrirLiga(${JSON.stringify(liga).replace(/"/g, '&quot;')})">
-            <div class="liga-card-inner">
-              <div class="liga-card-info">
-                <div class="liga-nome">${liga.nome || 'Liga Global OnzePerfeito'}</div>
-                <div class="liga-meta">
-                  <span>👥 ${(liga.membros || []).length} participantes</span>
-                  <span>Aberta a todos</span>
-                </div>
-              </div>
-              <span class="btn-ver-liga">Ver classificação →</span>
+          <div class="liga-card">
+            <div class="liga-nome">${liga.nome || 'Liga Global OnzePerfeito'}</div>
+            <div class="liga-meta">
+              <span>👥 ${(liga.membros || []).length} participantes</span>
+              <span>Aberta a todos</span>
             </div>
           </div>`;
       } catch {
@@ -474,25 +260,17 @@
           return;
         }
 
-        container.innerHTML = minhas.map(l => {
-          const ligaJson = JSON.stringify(l).replace(/"/g, '&quot;');
-          return `
-            <div class="liga-card" onclick="abrirLiga(${ligaJson})">
-              <div class="liga-card-inner">
-                <div class="liga-card-info">
-                  <div class="liga-nome">${l.nome}</div>
-                  <div class="liga-meta">
-                    <span>👥 ${(l.membros || []).length} membros</span>
-                    ${l.criador_id === utilizadorId ? '<span style="color:var(--dourado)">Tu criaste</span>' : ''}
-                  </div>
-                  <div class="liga-codigo"
-                       onclick="copiarCodigo('${l.codigo}', event)"
-                       title="Clica para copiar">${l.codigo}</div>
-                </div>
-                <span class="btn-ver-liga">Ver classificação →</span>
-              </div>
-            </div>`;
-        }).join('');
+        container.innerHTML = minhas.map(l => `
+          <div class="liga-card">
+            <div class="liga-nome">${l.nome}</div>
+            <div class="liga-meta">
+              <span>👥 ${(l.membros || []).length} membros</span>
+              ${l.criador_id === utilizadorId ? '<span style="color:var(--dourado)">Tu criaste</span>' : ''}
+            </div>
+            <div class="liga-codigo" onclick="copiarCodigo('${l.codigo}')" title="Clica para copiar">
+              ${l.codigo}
+            </div>
+          </div>`).join('');
       } catch {
         container.innerHTML = `<p class="empty-ligas">Não foi possível carregar as ligas.</p>`;
       }
@@ -545,155 +323,7 @@
       }
     }
 
-    // ══════════════════════════════════════════════════════
-    //  ABRIR VISTA DE DETALHE DA LIGA
-    // ══════════════════════════════════════════════════════
-    async function abrirLiga(liga) {
-      // Mudar para a vista de detalhe
-      document.getElementById('vista-lista').style.display   = 'none';
-      document.getElementById('vista-detalhe').style.display = 'block';
-
-      document.getElementById('detalhe-nome').textContent = liga.nome || 'Liga';
-      const membros = liga.membros || [];
-      document.getElementById('detalhe-meta').textContent =
-        `${membros.length} participante${membros.length !== 1 ? 's' : ''}`;
-
-      const container = document.getElementById('detalhe-tabela');
-      container.innerHTML = '<div class="loading-centro"><div class="spinner"></div></div>';
-
-      if (!membros.length) {
-        container.innerHTML = `<p class="empty-ligas">Esta liga ainda não tem membros.</p>`;
-        return;
-      }
-
-      try {
-        const jAtual = jornadaAtual();
-        const jornadas = Array.from({ length: jAtual }, (_, i) => i + 1);
-        const token = Auth.obterToken();
-        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-
-        // Buscar equipas de todos os membros e pontuações de todas as jornadas em paralelo
-        const [equipasData, pontuacoesData] = await Promise.all([
-          Promise.all(membros.map(uid =>
-            fetch(`${API_BASE}/equipas/?utilizador_id=${uid}`, { headers })
-              .then(r => r.ok ? r.json() : null)
-              .catch(() => null)
-          )),
-          Promise.all(jornadas.map(j =>
-            fetch(`${API_BASE}/jornadas/pontuacoes?jornada=${j}`, { headers })
-              .then(r => r.ok ? r.json() : [])
-              .catch(() => [])
-          ))
-        ]);
-
-        // Construir mapa: jogador_id → pontos totais acumulados em todas as jornadas
-        const ptsPorJogador = {};
-        for (const jornada of pontuacoesData) {
-          const lista = Array.isArray(jornada) ? jornada : [];
-          for (const p of lista) {
-            if (!p.jogador_id) continue;
-            ptsPorJogador[p.jogador_id] =
-              (ptsPorJogador[p.jogador_id] || 0) + Number(p.pontuacao || 0);
-          }
-        }
-
-        // Calcular pontos por membro somando os pontos dos jogadores da sua equipa
-        const ranking = membros.map((uid, i) => {
-          const equipa = equipasData[i];
-          let nome   = `Participante ${i + 1}`;
-          let pontos = 0;
-
-          if (equipa) {
-            // Tentar obter nome do utilizador a partir de vários campos possíveis
-            nome = equipa.utilizador_nome
-                || equipa.nome_utilizador
-                || equipa.nome_equipa
-                || equipa.utilizador_id
-                || nome;
-
-            const jogadores = equipa.jogadores || [];
-            pontos = jogadores.reduce((soma, j) => {
-              const jid = j.id || j.jogador_id || j._id;
-              return soma + (ptsPorJogador[jid] || 0);
-            }, 0);
-          }
-
-          return { uid, nome, pontos, equipa };
-        });
-
-        // Ordenar por pontos (desc); empate → manter ordem original
-        ranking.sort((a, b) => b.pontos - a.pontos);
-
-        renderizarClassificacao(ranking, container);
-
-      } catch (err) {
-        console.error(err);
-        container.innerHTML = `<p class="empty-ligas">Não foi possível carregar a classificação.</p>`;
-      }
-    }
-
-    // ── Renderizar tabela de classificação ─────────────────
-    function renderizarClassificacao(ranking, container) {
-      if (!ranking.length) {
-        container.innerHTML = `<p class="empty-ligas">Sem dados de classificação.</p>`;
-        return;
-      }
-
-      const temPontos = ranking.some(m => m.pontos > 0);
-
-      if (!temPontos) {
-        container.innerHTML = `
-          <div class="sem-pontuacoes">
-            <div class="icone-grande">⏳</div>
-            <p>Ainda não há jornadas jogadas.<br>As pontuações aparecem aqui após a primeira jornada.</p>
-          </div>
-          ${renderizarTabela(ranking, false)}
-        `;
-        return;
-      }
-
-      container.innerHTML = renderizarTabela(ranking, true);
-    }
-
-    function renderizarTabela(ranking, mostrarPontos) {
-      let html = `
-        <table class="tabela-classificacao">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Equipa / Utilizador</th>
-              ${mostrarPontos ? '<th>Pontos</th>' : ''}
-            </tr>
-          </thead>
-          <tbody>
-      `;
-
-      ranking.forEach((membro, i) => {
-        const pos    = i + 1;
-        const euSou  = membro.uid === utilizadorId;
-        const medalha = pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : pos;
-
-        html += `
-          <tr class="${euSou ? 'linha-minha' : ''}">
-            <td class="col-pos ${pos <= 3 ? 'top-3' : ''}">${medalha}</td>
-            <td>
-              <div class="col-nome">
-                <span>${membro.nome}</span>
-                ${euSou ? '<span class="badge-eu">Tu</span>' : ''}
-              </div>
-            </td>
-            ${mostrarPontos
-              ? `<td class="col-pontos">${membro.pontos} pts</td>`
-              : ''}
-          </tr>
-        `;
-      });
-
-      html += `</tbody></table>`;
-      return html;
-    }
-
-    // ── Inicializar ────────────────────────────────────────
+    // Inicializar
     carregarLigaGlobal();
     carregarMinhasLigas();
   </script>
