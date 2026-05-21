@@ -6,11 +6,113 @@
   <title>OnzePerfeito — A Minha Equipa</title>
   <link rel="stylesheet" href="style.css" />
   <style>
+    /* ── Stats ───────────────────────────────────────── */
     .equipa-header { display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:1rem; margin:2rem 0 1.5rem; }
     .equipa-stats { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem; }
     .equipa-stat { background:rgba(15,77,46,0.4); border:1px solid rgba(201,168,76,0.18); border-radius:var(--raio); padding:0.75rem 1.25rem; display:flex; flex-direction:column; gap:0.15rem; }
     .equipa-stat .label { font-size:0.7rem; font-family:var(--fonte-mono); letter-spacing:0.1em; text-transform:uppercase; color:var(--cinzento); }
     .equipa-stat .valor { font-family:var(--fonte-display); font-size:1.5rem; color:var(--dourado); line-height:1; }
+
+    /* ── Tabs vista ──────────────────────────────────── */
+    .vista-tabs { display:flex; gap:0.5rem; margin-bottom:1.5rem; }
+    .vista-tab { padding:0.5rem 1.25rem; border-radius:var(--raio); font-size:0.85rem; font-family:var(--fonte-mono); letter-spacing:0.05em; cursor:pointer; border:1px solid rgba(201,168,76,0.25); background:transparent; color:var(--cinzento); transition:all 0.2s; }
+    .vista-tab.activa { background:rgba(201,168,76,0.15); border-color:var(--dourado); color:var(--dourado); }
+    .vista-tab:hover:not(.activa) { border-color:rgba(201,168,76,0.4); color:rgba(245,245,240,0.8); }
+
+    /* ── Barra progresso ─────────────────────────────── */
+    .barra-progresso-wrap { height:6px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden; margin-top:0.4rem; }
+    .barra-progresso { height:100%; border-radius:3px; background:var(--dourado); transition:width 0.4s ease; }
+    .distribuicao { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+    .dist-item { background:rgba(15,77,46,0.4); border:1px solid rgba(201,168,76,0.15); border-radius:var(--raio); padding:0.5rem 1rem; font-size:0.8rem; display:flex; align-items:center; gap:0.5rem; }
+    .dist-num { font-family:var(--fonte-display); font-size:1.2rem; color:var(--dourado); line-height:1; }
+
+    /* ══════════════════════════════════════════════════
+       VISTA CAMPO
+    ══════════════════════════════════════════════════ */
+    .campo-wrapper { display:flex; gap:1.5rem; align-items:flex-start; flex-wrap:wrap; }
+
+    /* Seletor de formação */
+    .formacao-selector { display:flex; flex-direction:column; gap:0.5rem; min-width:160px; }
+    .formacao-label { font-size:0.7rem; font-family:var(--fonte-mono); letter-spacing:0.1em; text-transform:uppercase; color:var(--cinzento); margin-bottom:0.25rem; }
+    .formacao-btn { padding:0.5rem 0.9rem; border-radius:var(--raio); font-size:0.82rem; font-family:var(--fonte-mono); letter-spacing:0.05em; cursor:pointer; border:1px solid rgba(201,168,76,0.2); background:rgba(15,77,46,0.3); color:rgba(245,245,240,0.7); transition:all 0.2s; text-align:left; }
+    .formacao-btn.activa { background:rgba(201,168,76,0.18); border-color:var(--dourado); color:var(--dourado); font-weight:600; }
+    .formacao-btn:hover:not(.activa) { border-color:rgba(201,168,76,0.35); color:rgba(245,245,240,0.9); }
+
+    /* Campo de futebol */
+    .campo-container { flex:1; min-width:300px; max-width:560px; }
+    .campo-svg-wrap { position:relative; width:100%; aspect-ratio:2/3; background: linear-gradient(180deg,
+      #0f5c2e 0%, #0f5c2e 4.5%,
+      #0a4a22 4.5%, #0a4a22 9%,
+      #0f5c2e 9%, #0f5c2e 13.5%,
+      #0a4a22 13.5%, #0a4a22 18%,
+      #0f5c2e 18%, #0f5c2e 22.5%,
+      #0a4a22 22.5%, #0a4a22 27%,
+      #0f5c2e 27%, #0f5c2e 31.5%,
+      #0a4a22 31.5%, #0a4a22 36%,
+      #0f5c2e 36%, #0f5c2e 40.5%,
+      #0a4a22 40.5%, #0a4a22 45%,
+      #0f5c2e 45%, #0f5c2e 49.5%,
+      #0a4a22 49.5%, #0a4a22 54%,
+      #0f5c2e 54%, #0f5c2e 58.5%,
+      #0a4a22 58.5%, #0a4a22 63%,
+      #0f5c2e 63%, #0f5c2e 67.5%,
+      #0a4a22 67.5%, #0a4a22 72%,
+      #0f5c2e 72%, #0f5c2e 76.5%,
+      #0a4a22 76.5%, #0a4a22 81%,
+      #0f5c2e 81%, #0f5c2e 85.5%,
+      #0a4a22 85.5%, #0a4a22 90%,
+      #0f5c2e 90%, #0f5c2e 94.5%,
+      #0a4a22 94.5%, #0a4a22 100%
+    ); border-radius:8px; border:2px solid rgba(201,168,76,0.25); overflow:hidden; }
+
+    /* Linhas do campo (SVG overlay) */
+    .campo-linhas { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+
+    /* Slots de jogadores no campo */
+    .campo-slots { position:absolute; top:0; left:0; width:100%; height:100%; }
+
+    .slot { position:absolute; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; transition:transform 0.15s; z-index:10; }
+    .slot:hover { transform:translate(-50%,-50%) scale(1.05); }
+
+    .slot-circulo { width:44px; height:44px; border-radius:50%; background:rgba(10,46,26,0.85); border:2px solid rgba(201,168,76,0.4); display:flex; align-items:center; justify-content:center; font-size:0.6rem; font-family:var(--fonte-mono); color:var(--cinzento); text-align:center; transition:all 0.2s; overflow:hidden; position:relative; }
+    .slot-circulo.ocupado { border-color:var(--dourado); background:rgba(10,46,26,0.95); }
+    .slot-circulo.ocupado img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .slot-circulo:hover { border-color:var(--dourado); background:rgba(15,77,46,0.9); }
+    .slot-circulo.drag-over { border-color:#4ade80; background:rgba(74,222,128,0.15); transform:scale(1.1); }
+
+    .slot-pos { font-size:0.58rem; font-family:var(--fonte-mono); letter-spacing:0.06em; color:rgba(245,245,240,0.5); text-transform:uppercase; }
+    .slot-nome { font-size:0.62rem; font-weight:600; color:var(--branco); text-align:center; max-width:56px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:rgba(10,46,26,0.85); padding:1px 4px; border-radius:3px; }
+
+    /* Painel de jogadores disponíveis */
+    .bancada { flex:0 0 220px; }
+    .bancada-titulo { font-size:0.7rem; font-family:var(--fonte-mono); letter-spacing:0.1em; text-transform:uppercase; color:var(--cinzento); margin-bottom:0.75rem; }
+    .bancada-filtros { display:flex; gap:0.35rem; flex-wrap:wrap; margin-bottom:0.75rem; }
+    .filtro-pos { padding:0.2rem 0.5rem; font-size:0.7rem; font-family:var(--fonte-mono); border-radius:3px; border:1px solid rgba(201,168,76,0.2); background:transparent; color:var(--cinzento); cursor:pointer; transition:all 0.15s; }
+    .filtro-pos.activo { background:rgba(201,168,76,0.15); border-color:var(--dourado); color:var(--dourado); }
+
+    .bancada-lista { display:flex; flex-direction:column; gap:0.4rem; max-height:520px; overflow-y:auto; padding-right:4px; }
+    .bancada-lista::-webkit-scrollbar { width:4px; }
+    .bancada-lista::-webkit-scrollbar-track { background:transparent; }
+    .bancada-lista::-webkit-scrollbar-thumb { background:rgba(201,168,76,0.3); border-radius:2px; }
+
+    .bancada-jogador { display:flex; align-items:center; gap:0.5rem; padding:0.45rem 0.6rem; border-radius:var(--raio); background:rgba(15,77,46,0.35); border:1px solid rgba(201,168,76,0.12); cursor:grab; transition:all 0.15s; user-select:none; }
+    .bancada-jogador:hover { background:rgba(15,77,46,0.6); border-color:rgba(201,168,76,0.3); }
+    .bancada-jogador.colocado { opacity:0.35; cursor:default; }
+    .bancada-jogador.dragging { opacity:0.5; }
+    .bancada-jogador-info { flex:1; min-width:0; }
+    .bancada-jogador-nome { font-size:0.78rem; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .bancada-jogador-clube { font-size:0.65rem; color:var(--cinzento); font-family:var(--fonte-mono); }
+
+    /* Tooltip ao clicar num slot ocupado */
+    .slot-tooltip { position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%); background:rgba(10,20,15,0.97); border:1px solid rgba(201,168,76,0.4); border-radius:var(--raio); padding:0.6rem 0.8rem; width:160px; z-index:100; font-size:0.75rem; display:none; }
+    .slot-tooltip.visivel { display:block; }
+    .slot-tooltip-nome { font-weight:600; margin-bottom:0.3rem; }
+    .slot-tooltip-info { color:var(--cinzento); font-size:0.68rem; font-family:var(--fonte-mono); }
+    .slot-tooltip-btn { margin-top:0.5rem; width:100%; padding:0.3rem; font-size:0.72rem; }
+
+    /* ══════════════════════════════════════════════════
+       VISTA LISTA (original)
+    ══════════════════════════════════════════════════ */
     .secao { margin-bottom:2rem; }
     .secao-cabecalho { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.75rem; }
     .secao-titulo { font-family:var(--fonte-display); font-size:1rem; letter-spacing:0.06em; color:var(--dourado); }
@@ -24,14 +126,18 @@
     .media-col { font-family:var(--fonte-mono); }
     .btn-remover { padding:0.3rem 0.75rem; font-size:0.75rem; }
     .suplente-row { opacity:0.75; }
-    .barra-progresso-wrap { height:6px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden; margin-top:0.4rem; }
-    .barra-progresso { height:100%; border-radius:3px; background:var(--dourado); transition:width 0.4s ease; }
-    .distribuicao { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.5rem; }
-    .dist-item { background:rgba(15,77,46,0.4); border:1px solid rgba(201,168,76,0.15); border-radius:var(--raio); padding:0.5rem 1rem; font-size:0.8rem; display:flex; align-items:center; gap:0.5rem; }
-    .dist-num { font-family:var(--fonte-display); font-size:1.2rem; color:var(--dourado); line-height:1; }
+    .tag-suplente { font-size:0.62rem; font-family:var(--fonte-mono); color:var(--cinzento); letter-spacing:0.06em; background:rgba(255,255,255,0.07); padding:0.1rem 0.35rem; border-radius:3px; margin-left:0.35rem; vertical-align:middle; }
     .equipa-vazia { text-align:center; padding:3rem 1rem; color:var(--cinzento); }
     .equipa-vazia a { color:var(--dourado); }
-    .tag-suplente { font-size:0.62rem; font-family:var(--fonte-mono); color:var(--cinzento); letter-spacing:0.06em; background:rgba(255,255,255,0.07); padding:0.1rem 0.35rem; border-radius:3px; margin-left:0.35rem; vertical-align:middle; }
+
+    /* Suplentes no campo */
+    .suplentes-campo { margin-top:1.25rem; }
+    .suplentes-campo-titulo { font-size:0.7rem; font-family:var(--fonte-mono); letter-spacing:0.1em; text-transform:uppercase; color:var(--cinzento); margin-bottom:0.6rem; }
+    .suplentes-lista { display:flex; gap:0.6rem; flex-wrap:wrap; }
+    .suplente-card { display:flex; align-items:center; gap:0.5rem; padding:0.4rem 0.7rem; border-radius:var(--raio); background:rgba(15,77,46,0.3); border:1px solid rgba(201,168,76,0.15); font-size:0.78rem; }
+    .suplente-card-nome { font-weight:500; }
+    .suplente-card-pos { font-size:0.65rem; font-family:var(--fonte-mono); color:var(--cinzento); }
+    .suplente-card-btn { font-size:0.65rem; padding:0.15rem 0.45rem; margin-left:0.25rem; }
   </style>
 </head>
 <body>
@@ -54,7 +160,7 @@
       <div class="equipa-stat"><span class="label">Custo total</span><span class="valor" id="stat-custo">—</span></div>
     </div>
 
-    <div style="margin-bottom:1.5rem;">
+    <div style="margin-bottom:1rem;">
       <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--cinzento);margin-bottom:0.3rem;">
         <span>Vagas preenchidas</span><span id="progresso-texto">0 / 15</span>
       </div>
@@ -63,38 +169,129 @@
 
     <div class="distribuicao" id="distribuicao"></div>
 
-    <!-- Titulares -->
-    <div class="secao">
-      <div class="secao-cabecalho">
-        <span class="secao-titulo">Titulares</span>
-        <span class="secao-sub" id="count-titulares">0 / 11</span>
-      </div>
-      <div class="tabela-wrapper">
-        <table class="tabela">
-          <thead><tr><th>Jogador</th><th>Clube</th><th>Posição</th><th>Preço</th><th>Média</th><th></th></tr></thead>
-          <tbody id="tabela-titulares">
-            <tr><td colspan="6"><div class="loading-centro"><div class="spinner"></div></div></td></tr>
-          </tbody>
-        </table>
+    <!-- Tabs -->
+    <div class="vista-tabs">
+      <button class="vista-tab activa" onclick="mudarVista('campo')" id="tab-campo">⚽ Vista Tática</button>
+      <button class="vista-tab" onclick="mudarVista('lista')" id="tab-lista">☰ Vista Lista</button>
+    </div>
+
+    <!-- ═══════════ VISTA CAMPO ═══════════ -->
+    <div id="vista-campo">
+      <div class="campo-wrapper">
+
+        <!-- Seletor de formação -->
+        <div class="formacao-selector">
+          <div class="formacao-label">Formação</div>
+          <button class="formacao-btn activa" onclick="mudarFormacao('4-3-3')" id="form-433">4-3-3</button>
+          <button class="formacao-btn" onclick="mudarFormacao('4-4-2')" id="form-442">4-4-2</button>
+          <button class="formacao-btn" onclick="mudarFormacao('3-5-2')" id="form-352">3-5-2</button>
+          <button class="formacao-btn" onclick="mudarFormacao('4-2-3-1')" id="form-4231">4-2-3-1</button>
+          <button class="formacao-btn" onclick="mudarFormacao('5-3-2')" id="form-532">5-3-2</button>
+          <button class="formacao-btn" onclick="mudarFormacao('3-4-3')" id="form-343">3-4-3</button>
+          <div style="margin-top:0.75rem; font-size:0.7rem; font-family:var(--fonte-mono); color:var(--cinzento); line-height:1.4;">
+            Arrasta os jogadores para os slots ou clica num slot para escolher.
+          </div>
+        </div>
+
+        <!-- Campo de futebol -->
+        <div class="campo-container">
+          <div class="campo-svg-wrap" id="campo">
+            <!-- Linhas do campo -->
+            <svg class="campo-linhas" viewBox="0 0 100 150" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Borda -->
+              <rect x="3" y="3" width="94" height="144" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="0.5"/>
+              <!-- Linha de meio-campo -->
+              <line x1="3" y1="75" x2="97" y2="75" stroke="rgba(255,255,255,0.25)" stroke-width="0.5"/>
+              <!-- Círculo central -->
+              <circle cx="50" cy="75" r="12" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="0.5"/>
+              <circle cx="50" cy="75" r="0.8" fill="rgba(255,255,255,0.4)"/>
+              <!-- Grande área de cima -->
+              <rect x="22" y="3" width="56" height="22" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="0.5"/>
+              <!-- Pequena área de cima -->
+              <rect x="36" y="3" width="28" height="10" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.4"/>
+              <!-- Grande área de baixo -->
+              <rect x="22" y="125" width="56" height="22" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="0.5"/>
+              <!-- Pequena área de baixo -->
+              <rect x="36" y="137" width="28" height="10" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.4"/>
+              <!-- Penaltis -->
+              <circle cx="50" cy="19" r="0.8" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="50" cy="131" r="0.8" fill="rgba(255,255,255,0.3)"/>
+              <!-- Arcos de penalti -->
+              <path d="M 36 25 A 14 14 0 0 0 64 25" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.4"/>
+              <path d="M 36 125 A 14 14 0 0 1 64 125" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.4"/>
+              <!-- Cantos -->
+              <path d="M 3 8 A 5 5 0 0 0 8 3" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.4"/>
+              <path d="M 92 3 A 5 5 0 0 0 97 8" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.4"/>
+              <path d="M 3 142 A 5 5 0 0 1 8 147" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.4"/>
+              <path d="M 97 142 A 5 5 0 0 0 92 147" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.4"/>
+            </svg>
+            <!-- Slots dinâmicos injetados por JS -->
+            <div class="campo-slots" id="campo-slots"></div>
+          </div>
+
+          <!-- Suplentes abaixo do campo -->
+          <div class="suplentes-campo" id="suplentes-campo-wrap">
+            <div class="suplentes-campo-titulo">🔄 Suplentes</div>
+            <div class="suplentes-lista" id="suplentes-campo-lista"></div>
+          </div>
+        </div>
+
+        <!-- Bancada: jogadores disponíveis -->
+        <div class="bancada">
+          <div class="bancada-titulo">Plantel</div>
+          <div class="bancada-filtros">
+            <button class="filtro-pos activo" onclick="filtrarBancada('todos')" id="filtro-todos">Todos</button>
+            <button class="filtro-pos" onclick="filtrarBancada('guarda-redes')" id="filtro-gr">GR</button>
+            <button class="filtro-pos" onclick="filtrarBancada('defesa')" id="filtro-def">DEF</button>
+            <button class="filtro-pos" onclick="filtrarBancada('medio')" id="filtro-med">MED</button>
+            <button class="filtro-pos" onclick="filtrarBancada('avancado')" id="filtro-av">AV</button>
+          </div>
+          <div class="bancada-lista" id="bancada-lista"></div>
+        </div>
+
       </div>
     </div>
 
-    <!-- Suplentes -->
-    <div class="secao">
-      <div class="secao-cabecalho">
-        <span class="secao-titulo">Suplentes</span>
-        <span class="secao-sub" id="count-suplentes">0 / 4</span>
+    <!-- ═══════════ VISTA LISTA ═══════════ -->
+    <div id="vista-lista" style="display:none;">
+      <div class="secao">
+        <div class="secao-cabecalho">
+          <span class="secao-titulo">Titulares</span>
+          <span class="secao-sub" id="count-titulares">0 / 11</span>
+        </div>
+        <div class="tabela-wrapper">
+          <table class="tabela">
+            <thead><tr><th>Jogador</th><th>Clube</th><th>Posição</th><th>Preço</th><th>Média</th><th></th></tr></thead>
+            <tbody id="tabela-titulares">
+              <tr><td colspan="6"><div class="loading-centro"><div class="spinner"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div class="tabela-wrapper">
-        <table class="tabela">
-          <thead><tr><th>Jogador</th><th>Clube</th><th>Posição</th><th>Preço</th><th>Média</th><th></th></tr></thead>
-          <tbody id="tabela-suplentes">
-            <tr><td colspan="6"><p style="padding:1rem;text-align:center;color:var(--cinzento);font-size:0.85rem;">Sem suplentes</p></td></tr>
-          </tbody>
-        </table>
+      <div class="secao">
+        <div class="secao-cabecalho">
+          <span class="secao-titulo">Suplentes</span>
+          <span class="secao-sub" id="count-suplentes">0 / 4</span>
+        </div>
+        <div class="tabela-wrapper">
+          <table class="tabela">
+            <thead><tr><th>Jogador</th><th>Clube</th><th>Posição</th><th>Preço</th><th>Média</th><th></th></tr></thead>
+            <tbody id="tabela-suplentes">
+              <tr><td colspan="6"><p style="padding:1rem;text-align:center;color:var(--cinzento);font-size:0.85rem;">Sem suplentes</p></td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
+  </div>
+
+  <!-- Tooltip global para slots -->
+  <div id="slot-tooltip" class="slot-tooltip">
+    <div class="slot-tooltip-nome" id="tt-nome"></div>
+    <div class="slot-tooltip-info" id="tt-info"></div>
+    <button class="btn btn-perigo slot-tooltip-btn" id="tt-remover-btn">Remover do campo</button>
+    <button class="btn btn-secundario slot-tooltip-btn" style="margin-top:0.25rem;" id="tt-fechar-btn">Fechar</button>
   </div>
 
   <script src="navbar.js"></script>
@@ -108,45 +305,380 @@
     const utilizadorId = Auth.obterIDdoToken();
     let equipaAtual = [];
 
+    // ══════════════════════════════════════════════════════
+    // FORMAÇÕES — define a posição (%) no campo de cada slot
+    // Coordenadas: left%, top% (0% = topo = ataque; 100% = baixo = GR)
+    // A vista é: GR em baixo, ataque em cima
+    // ══════════════════════════════════════════════════════
+    const FORMACOES = {
+      '4-3-3': [
+        // GR
+        { id:'gr', posicao:'guarda-redes', label:'GR', x:50, y:88 },
+        // Defesas
+        { id:'dd', posicao:'defesa', label:'DD', x:20, y:72 },
+        { id:'dc1', posicao:'defesa', label:'DC', x:37, y:72 },
+        { id:'dc2', posicao:'defesa', label:'DC', x:63, y:72 },
+        { id:'de', posicao:'defesa', label:'DE', x:80, y:72 },
+        // Médios
+        { id:'md1', posicao:'medio', label:'MC', x:30, y:53 },
+        { id:'md2', posicao:'medio', label:'MC', x:50, y:53 },
+        { id:'md3', posicao:'medio', label:'MC', x:70, y:53 },
+        // Avançados
+        { id:'av1', posicao:'avancado', label:'EE', x:20, y:30 },
+        { id:'av2', posicao:'avancado', label:'CA', x:50, y:28 },
+        { id:'av3', posicao:'avancado', label:'ED', x:80, y:30 },
+      ],
+      '4-4-2': [
+        { id:'gr', posicao:'guarda-redes', label:'GR', x:50, y:88 },
+        { id:'dd', posicao:'defesa', label:'DD', x:20, y:72 },
+        { id:'dc1', posicao:'defesa', label:'DC', x:37, y:72 },
+        { id:'dc2', posicao:'defesa', label:'DC', x:63, y:72 },
+        { id:'de', posicao:'defesa', label:'DE', x:80, y:72 },
+        { id:'md1', posicao:'medio', label:'MD', x:20, y:53 },
+        { id:'md2', posicao:'medio', label:'MC', x:40, y:53 },
+        { id:'md3', posicao:'medio', label:'MC', x:60, y:53 },
+        { id:'md4', posicao:'medio', label:'ME', x:80, y:53 },
+        { id:'av1', posicao:'avancado', label:'AV', x:37, y:30 },
+        { id:'av2', posicao:'avancado', label:'AV', x:63, y:30 },
+      ],
+      '3-5-2': [
+        { id:'gr', posicao:'guarda-redes', label:'GR', x:50, y:88 },
+        { id:'dc1', posicao:'defesa', label:'DC', x:27, y:72 },
+        { id:'dc2', posicao:'defesa', label:'DC', x:50, y:72 },
+        { id:'dc3', posicao:'defesa', label:'DC', x:73, y:72 },
+        { id:'md1', posicao:'medio', label:'MD', x:15, y:53 },
+        { id:'md2', posicao:'medio', label:'MC', x:32, y:53 },
+        { id:'md3', posicao:'medio', label:'MC', x:50, y:50 },
+        { id:'md4', posicao:'medio', label:'MC', x:68, y:53 },
+        { id:'md5', posicao:'medio', label:'ME', x:85, y:53 },
+        { id:'av1', posicao:'avancado', label:'AV', x:37, y:30 },
+        { id:'av2', posicao:'avancado', label:'AV', x:63, y:30 },
+      ],
+      '4-2-3-1': [
+        { id:'gr', posicao:'guarda-redes', label:'GR', x:50, y:88 },
+        { id:'dd', posicao:'defesa', label:'DD', x:20, y:74 },
+        { id:'dc1', posicao:'defesa', label:'DC', x:37, y:74 },
+        { id:'dc2', posicao:'defesa', label:'DC', x:63, y:74 },
+        { id:'de', posicao:'defesa', label:'DE', x:80, y:74 },
+        { id:'mdf1', posicao:'medio', label:'MDF', x:37, y:60 },
+        { id:'mdf2', posicao:'medio', label:'MDF', x:63, y:60 },
+        { id:'md1', posicao:'medio', label:'ME', x:20, y:44 },
+        { id:'md2', posicao:'medio', label:'MC', x:50, y:42 },
+        { id:'md3', posicao:'medio', label:'MD', x:80, y:44 },
+        { id:'av1', posicao:'avancado', label:'CA', x:50, y:28 },
+      ],
+      '5-3-2': [
+        { id:'gr', posicao:'guarda-redes', label:'GR', x:50, y:88 },
+        { id:'dd', posicao:'defesa', label:'DD', x:12, y:72 },
+        { id:'dc1', posicao:'defesa', label:'DC', x:29, y:72 },
+        { id:'dc2', posicao:'defesa', label:'DC', x:50, y:72 },
+        { id:'dc3', posicao:'defesa', label:'DC', x:71, y:72 },
+        { id:'de', posicao:'defesa', label:'DE', x:88, y:72 },
+        { id:'md1', posicao:'medio', label:'MC', x:27, y:53 },
+        { id:'md2', posicao:'medio', label:'MC', x:50, y:50 },
+        { id:'md3', posicao:'medio', label:'MC', x:73, y:53 },
+        { id:'av1', posicao:'avancado', label:'AV', x:37, y:30 },
+        { id:'av2', posicao:'avancado', label:'AV', x:63, y:30 },
+      ],
+      '3-4-3': [
+        { id:'gr', posicao:'guarda-redes', label:'GR', x:50, y:88 },
+        { id:'dc1', posicao:'defesa', label:'DC', x:27, y:72 },
+        { id:'dc2', posicao:'defesa', label:'DC', x:50, y:72 },
+        { id:'dc3', posicao:'defesa', label:'DC', x:73, y:72 },
+        { id:'md1', posicao:'medio', label:'MD', x:20, y:53 },
+        { id:'md2', posicao:'medio', label:'MC', x:40, y:53 },
+        { id:'md3', posicao:'medio', label:'MC', x:60, y:53 },
+        { id:'md4', posicao:'medio', label:'ME', x:80, y:53 },
+        { id:'av1', posicao:'avancado', label:'EE', x:20, y:30 },
+        { id:'av2', posicao:'avancado', label:'CA', x:50, y:28 },
+        { id:'av3', posicao:'avancado', label:'ED', x:80, y:30 },
+      ],
+    };
+
+    // Estado da tática: slotId -> jogador ou null
+    let taticaAtual = {};
+    let formacaoAtual = '4-3-3';
+    let filtroAtual = 'todos';
+    let jogadorArrastado = null;
+    let vistaCampo = true;
+
+    // ══════════════════════════════════════════
+    // Carregar equipa
+    // ══════════════════════════════════════════
     async function carregar() {
       try { const e = await API.equipas.obter(utilizadorId); equipaAtual = e.jogadores || []; }
       catch { equipaAtual = []; }
+      // Reset tática
+      taticaAtual = {};
+      // Tentar auto-preencher: atribuir jogadores por posição aos slots da formação
+      autoPreencherTatica();
       renderizar();
     }
 
-    function renderizar() {
+    function autoPreencherTatica() {
+      const slots = FORMACOES[formacaoAtual];
+      const usados = new Set();
+      taticaAtual = {};
       const titulares = equipaAtual.slice(0, 11);
-      const suplentes = equipaAtual.slice(11, 15);
-      const total  = equipaAtual.length;
-      const custo  = equipaAtual.reduce((s,j) => s + (j.preco||0), 0);
-      const saldo  = Math.max(0, 100 - custo);
+      slots.forEach(slot => {
+        const jog = titulares.find(j => j.posicao === slot.posicao && !usados.has(j.id));
+        if (jog) { taticaAtual[slot.id] = jog; usados.add(jog.id); }
+        else taticaAtual[slot.id] = null;
+      });
+    }
 
-      document.getElementById('stat-total').textContent   = total;
-      document.getElementById('stat-saldo').textContent   = saldo.toFixed(1) + 'M';
-      document.getElementById('stat-custo').textContent   = custo.toFixed(1) + 'M';
+    // ══════════════════════════════════════════
+    // Renderizar tudo
+    // ══════════════════════════════════════════
+    function renderizar() {
+      const total = equipaAtual.length;
+      const custo = equipaAtual.reduce((s,j) => s + (j.preco||0), 0);
+      const saldo = Math.max(0, 100 - custo);
+
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-saldo').textContent = saldo.toFixed(1) + 'M';
+      document.getElementById('stat-custo').textContent = custo.toFixed(1) + 'M';
       document.getElementById('progresso-texto').textContent = `${total} / 15`;
       document.getElementById('barra-progresso').style.width = `${(total/15)*100}%`;
-      document.getElementById('count-titulares').textContent = `${titulares.length} / 11`;
-      document.getElementById('count-suplentes').textContent = `${suplentes.length} / 4`;
 
-      // Distribuição
       const dist = {'guarda-redes':0,'defesa':0,'medio':0,'avancado':0};
       equipaAtual.forEach(j => { if(dist[j.posicao]!==undefined) dist[j.posicao]++; });
       const icones = {'guarda-redes':'🧤','defesa':'🛡️','medio':'🎯','avancado':'⚽'};
-      const labels = {'guarda-redes':'GR','defesa':'DEF','medio':'MED','avancado':'AV'};
+      const labels  = {'guarda-redes':'GR','defesa':'DEF','medio':'MED','avancado':'AV'};
       document.getElementById('distribuicao').innerHTML =
         Object.entries(dist).map(([pos,n]) =>
           `<div class="dist-item">${icones[pos]}<span class="dist-num">${n}</span><span style="color:var(--cinzento)">${labels[pos]}</span></div>`
         ).join('');
 
-      // Tabelas
+      if (vistaCampo) renderizarCampo();
+      else renderizarLista();
+    }
+
+    // ══════════════════════════════════════════
+    // VISTA CAMPO
+    // ══════════════════════════════════════════
+    function renderizarCampo() {
+      renderizarSlots();
+      renderizarBancada();
+      renderizarSuplentes();
+    }
+
+    function renderizarSlots() {
+      const container = document.getElementById('campo-slots');
+      container.innerHTML = '';
+      const slots = FORMACOES[formacaoAtual];
+
+      slots.forEach(slot => {
+        const jog = taticaAtual[slot.id];
+        const div = document.createElement('div');
+        div.className = 'slot';
+        div.style.left = slot.x + '%';
+        div.style.top  = slot.y + '%';
+        div.dataset.slotId = slot.id;
+        div.dataset.posicao = slot.posicao;
+
+        const circulo = document.createElement('div');
+        circulo.className = 'slot-circulo' + (jog ? ' ocupado' : '');
+        circulo.dataset.slotId = slot.id;
+
+        if (jog) {
+          // Mostrar avatar do jogador
+          const av = Avatares.criarAvatarJogador(jog, 44);
+          av.style.borderRadius = '50%';
+          av.style.width = '44px';
+          av.style.height = '44px';
+          av.style.objectFit = 'cover';
+          circulo.appendChild(av);
+        } else {
+          circulo.textContent = slot.label;
+        }
+
+        // Drag & Drop: aceitar drop
+        circulo.addEventListener('dragover', e => {
+          e.preventDefault();
+          if (jogadorArrastado && jogadorArrastado.posicao === slot.posicao) {
+            circulo.classList.add('drag-over');
+          }
+        });
+        circulo.addEventListener('dragleave', () => circulo.classList.remove('drag-over'));
+        circulo.addEventListener('drop', e => {
+          e.preventDefault();
+          circulo.classList.remove('drag-over');
+          if (!jogadorArrastado) return;
+          if (jogadorArrastado.posicao !== slot.posicao) {
+            API.mostrarAlerta('alerta', `Este slot é para ${labelPosicao(slot.posicao)}. ${jogadorArrastado.nome} é ${labelPosicao(jogadorArrastado.posicao)}.`, 'erro');
+            return;
+          }
+          // Se o slot já tiver jogador, trocar
+          const anterior = taticaAtual[slot.id];
+          // Verificar se o jogador arrastado já está noutro slot
+          const slotAntigo = Object.keys(taticaAtual).find(s => taticaAtual[s] && taticaAtual[s].id === jogadorArrastado.id);
+          if (slotAntigo) taticaAtual[slotAntigo] = anterior;
+          taticaAtual[slot.id] = jogadorArrastado;
+          jogadorArrastado = null;
+          renderizarCampo();
+        });
+
+        // Clique num slot ocupado: mostrar tooltip
+        circulo.addEventListener('click', e => {
+          e.stopPropagation();
+          if (jog) mostrarTooltipSlot(div, slot.id, jog);
+          else esconderTooltip();
+        });
+
+        const posLabel = document.createElement('div');
+        posLabel.className = 'slot-pos';
+        posLabel.textContent = slot.label;
+
+        div.appendChild(circulo);
+        div.appendChild(posLabel);
+        if (jog) {
+          const nome = document.createElement('div');
+          nome.className = 'slot-nome';
+          nome.textContent = jog.nome.split(' ').slice(-1)[0]; // apelido
+          div.appendChild(nome);
+        }
+        container.appendChild(div);
+      });
+    }
+
+    function renderizarBancada() {
+      const lista = document.getElementById('bancada-lista');
+      lista.innerHTML = '';
+      const colocados = new Set(Object.values(taticaAtual).filter(Boolean).map(j=>j.id));
+      const suplentes = new Set(equipaAtual.slice(11,15).map(j=>j.id));
+
+      let jogadores = equipaAtual.filter(j => !suplentes.has(j.id));
+      if (filtroAtual !== 'todos') jogadores = jogadores.filter(j => j.posicao === filtroAtual);
+
+      if (!jogadores.length) {
+        lista.innerHTML = '<p style="font-size:0.78rem;color:var(--cinzento);padding:0.5rem;">Sem jogadores nesta posição.</p>';
+        return;
+      }
+
+      jogadores.forEach(jog => {
+        const div = document.createElement('div');
+        div.className = 'bancada-jogador' + (colocados.has(jog.id) ? ' colocado' : '');
+        div.draggable = !colocados.has(jog.id);
+        div.dataset.jogadorId = jog.id;
+
+        const av = Avatares.criarAvatarJogador(jog, 28);
+        const info = document.createElement('div');
+        info.className = 'bancada-jogador-info';
+        info.innerHTML = `<div class="bancada-jogador-nome">${jog.nome}</div>
+          <div class="bancada-jogador-clube">${labelPosicao(jog.posicao)} · ${jog.clube}</div>`;
+        const badge = document.createElement('span');
+        badge.innerHTML = API.badgePosicao(jog.posicao);
+
+        div.appendChild(av);
+        div.appendChild(info);
+        div.appendChild(badge);
+
+        div.addEventListener('dragstart', () => {
+          jogadorArrastado = jog;
+          div.classList.add('dragging');
+        });
+        div.addEventListener('dragend', () => {
+          jogadorArrastado = null;
+          div.classList.remove('dragging');
+        });
+
+        // Clique para colocar no primeiro slot compatível disponível
+        if (!colocados.has(jog.id)) {
+          div.addEventListener('click', () => {
+            const slots = FORMACOES[formacaoAtual];
+            const slotVazio = slots.find(s => s.posicao === jog.posicao && !taticaAtual[s.id]);
+            if (slotVazio) {
+              taticaAtual[slotVazio.id] = jog;
+              renderizarCampo();
+            } else {
+              API.mostrarAlerta('alerta', `Não há slots vazios disponíveis para ${labelPosicao(jog.posicao)} nesta formação.`, 'info');
+            }
+          });
+        }
+
+        lista.appendChild(div);
+      });
+    }
+
+    function renderizarSuplentes() {
+      const lista = document.getElementById('suplentes-campo-lista');
+      lista.innerHTML = '';
+      const suplentes = equipaAtual.slice(11, 15);
+      if (!suplentes.length) {
+        lista.innerHTML = '<span style="font-size:0.78rem;color:var(--cinzento);">Sem suplentes.</span>';
+        return;
+      }
+      suplentes.forEach(j => {
+        const div = document.createElement('div');
+        div.className = 'suplente-card';
+        const av = Avatares.criarAvatarJogador(j, 26);
+        div.appendChild(av);
+        div.innerHTML += `<span class="suplente-card-nome">${j.nome}</span>
+          <span class="suplente-card-pos">${labelPosicao(j.posicao)}</span>`;
+        const btnRem = document.createElement('button');
+        btnRem.className = 'btn btn-perigo suplente-card-btn';
+        btnRem.textContent = '✕';
+        btnRem.title = 'Remover da equipa';
+        btnRem.onclick = () => removerJogador(j.id);
+        div.appendChild(btnRem);
+        lista.appendChild(div);
+      });
+    }
+
+    // ══════════════════════════════════════════
+    // Tooltip slot
+    // ══════════════════════════════════════════
+    const tooltip = document.getElementById('slot-tooltip');
+    let slotTooltipAtivo = null;
+
+    function mostrarTooltipSlot(slotEl, slotId, jog) {
+      if (slotTooltipAtivo === slotId) { esconderTooltip(); return; }
+      slotTooltipAtivo = slotId;
+      document.getElementById('tt-nome').textContent = jog.nome;
+      document.getElementById('tt-info').textContent = `${labelPosicao(jog.posicao)} · ${jog.clube} · ${API.formatarMedia(jog.media_pontuacao)} média`;
+      document.getElementById('tt-remover-btn').onclick = () => {
+        // Remover do slot (apenas da tática, não da equipa)
+        taticaAtual[slotId] = null;
+        esconderTooltip();
+        renderizarCampo();
+      };
+      document.getElementById('tt-fechar-btn').onclick = esconderTooltip;
+
+      // Posicionar o tooltip perto do slot
+      const rect = slotEl.getBoundingClientRect();
+      tooltip.style.display = 'block';
+      tooltip.style.position = 'fixed';
+      tooltip.style.left = (rect.left + rect.width/2 - 80) + 'px';
+      tooltip.style.top  = (rect.top - tooltip.offsetHeight - 8) + 'px';
+      tooltip.style.bottom = 'auto';
+      tooltip.style.right = 'auto';
+    }
+
+    function esconderTooltip() {
+      tooltip.style.display = 'none';
+      slotTooltipAtivo = null;
+    }
+
+    document.addEventListener('click', e => {
+      if (!tooltip.contains(e.target) && !e.target.closest('.slot')) esconderTooltip();
+    });
+
+    // ══════════════════════════════════════════
+    // VISTA LISTA
+    // ══════════════════════════════════════════
+    function renderizarLista() {
+      const titulares = equipaAtual.slice(0, 11);
+      const suplentes = equipaAtual.slice(11, 15);
+      document.getElementById('count-titulares').textContent = `${titulares.length} / 11`;
+      document.getElementById('count-suplentes').textContent = `${suplentes.length} / 4`;
+
       if (!equipaAtual.length) {
         const vazia = `<tr><td colspan="6"><div class="equipa-vazia"><p>A tua equipa está vazia.</p><p style="margin-top:0.5rem"><a href="mercado.html">Vai ao Mercado</a> para adicionar jogadores.</p></div></td></tr>`;
         document.getElementById('tabela-titulares').innerHTML = vazia;
         document.getElementById('tabela-suplentes').innerHTML = `<tr><td colspan="6"><p style="padding:1rem;text-align:center;color:var(--cinzento);font-size:0.85rem;">Sem suplentes</p></td></tr>`;
         return;
       }
-
       preencherTabela('tabela-titulares', titulares, false);
       preencherTabela('tabela-suplentes', suplentes, true);
     }
@@ -164,55 +696,71 @@
     function criarLinha(j, suplente) {
       const tr = document.createElement('tr');
       if (suplente) tr.className = 'suplente-row';
-
-      // Jogador
       const tdJ = document.createElement('td');
       const jogCell = document.createElement('div');
       jogCell.className = 'jogador-cell';
       jogCell.appendChild(Avatares.criarAvatarJogador(j, 36));
       const info = document.createElement('div');
-      info.innerHTML = `<div class="nome-jogador">${j.nome}${suplente ? '<span class="tag-suplente">SUB</span>' : ''}</div>`;
+      const tagSub = suplente ? '<span class="tag-suplente">SUB</span>' : '';
+      info.innerHTML = `<div class="nome-jogador">${j.nome}${tagSub}</div>`;
       jogCell.appendChild(info);
       tdJ.appendChild(jogCell);
-
-      // Clube
       const tdC = document.createElement('td');
       const clubCell = document.createElement('div');
       clubCell.className = 'clube-cell';
       clubCell.appendChild(Avatares.criarLogoClube(j.clube, 20));
       clubCell.appendChild(document.createTextNode(j.clube));
       tdC.appendChild(clubCell);
-
-      // Posição
-      const tdP = document.createElement('td');
-      tdP.innerHTML = API.badgePosicao(j.posicao);
-
-      // Preço
-      const tdPr = document.createElement('td');
-      tdPr.className = 'preco-col';
-      tdPr.textContent = API.formatarPreco(j.preco);
-
-      // Média
-      const tdM = document.createElement('td');
-      tdM.className = 'media-col';
-      tdM.textContent = API.formatarMedia(j.media_pontuacao);
-
-      // Remover
+      const tdP = document.createElement('td'); tdP.innerHTML = API.badgePosicao(j.posicao);
+      const tdPr = document.createElement('td'); tdPr.className='preco-col'; tdPr.textContent=API.formatarPreco(j.preco);
+      const tdM = document.createElement('td'); tdM.className='media-col'; tdM.textContent=API.formatarMedia(j.media_pontuacao);
       const tdA = document.createElement('td');
       const btn = document.createElement('button');
-      btn.className = 'btn btn-perigo btn-remover';
-      btn.textContent = 'Remover';
+      btn.className='btn btn-perigo btn-remover'; btn.textContent='Remover';
       btn.onclick = () => removerJogador(j.id);
       tdA.appendChild(btn);
-
       tr.append(tdJ, tdC, tdP, tdPr, tdM, tdA);
       return tr;
+    }
+
+    // ══════════════════════════════════════════
+    // Controles
+    // ══════════════════════════════════════════
+    function mudarVista(v) {
+      vistaCampo = (v === 'campo');
+      document.getElementById('vista-campo').style.display = vistaCampo ? 'block' : 'none';
+      document.getElementById('vista-lista').style.display  = vistaCampo ? 'none' : 'block';
+      document.getElementById('tab-campo').classList.toggle('activa', vistaCampo);
+      document.getElementById('tab-lista').classList.toggle('activa', !vistaCampo);
+      renderizar();
+    }
+
+    function mudarFormacao(f) {
+      formacaoAtual = f;
+      document.querySelectorAll('.formacao-btn').forEach(b => b.classList.remove('activa'));
+      document.getElementById('form-' + f.replace(/-/g,'')).classList.add('activa');
+      autoPreencherTatica();
+      renderizarCampo();
+    }
+
+    function filtrarBancada(pos) {
+      filtroAtual = pos;
+      document.querySelectorAll('.filtro-pos').forEach(b => b.classList.remove('activo'));
+      const ids = { 'todos':'filtro-todos','guarda-redes':'filtro-gr','defesa':'filtro-def','medio':'filtro-med','avancado':'filtro-av' };
+      document.getElementById(ids[pos]).classList.add('activo');
+      renderizarBancada();
+    }
+
+    function labelPosicao(p) {
+      return {'guarda-redes':'Guarda-Redes','defesa':'Defesa','medio':'Médio','avancado':'Avançado'}[p] || p;
     }
 
     async function removerJogador(id) {
       const idx = equipaAtual.findIndex(j => j.id === id);
       if (idx === -1) return;
       const [removido] = equipaAtual.splice(idx, 1);
+      // Remover também da tática
+      Object.keys(taticaAtual).forEach(s => { if (taticaAtual[s] && taticaAtual[s].id === id) taticaAtual[s] = null; });
       try {
         await API.equipas.guardar(utilizadorId, equipaAtual);
         API.mostrarAlerta('alerta', `${removido.nome} removido da equipa.`, 'info');
@@ -220,6 +768,7 @@
       } catch (e) {
         equipaAtual.splice(idx, 0, removido);
         API.mostrarAlerta('alerta', e.message || 'Erro ao guardar equipa.', 'erro');
+        renderizar();
       }
     }
 
