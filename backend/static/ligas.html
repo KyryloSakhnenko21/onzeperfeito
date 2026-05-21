@@ -14,22 +14,18 @@
       gap: 1rem;
       margin: 2rem 0 1.5rem;
     }
-
     .ligas-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1.5rem;
     }
-
     @media (max-width: 700px) { .ligas-grid { grid-template-columns: 1fr; } }
-
     .painel {
       background: rgba(15,77,46,0.4);
       border: 1px solid rgba(201,168,76,0.2);
       border-radius: var(--raio-grande);
       padding: 1.5rem;
     }
-
     .painel-titulo {
       font-family: var(--fonte-display);
       font-size: 1.1rem;
@@ -40,38 +36,17 @@
       align-items: center;
       gap: 0.5rem;
     }
-
-    /* ── Liga card ───────────────────────────────────────── */
     .liga-card {
       background: rgba(10,46,26,0.5);
       border: 1px solid rgba(201,168,76,0.15);
       border-radius: var(--raio);
       padding: 1rem;
       margin-bottom: 0.75rem;
-      transition: border-color var(--transicao), background var(--transicao);
+      transition: border-color var(--transicao);
       cursor: pointer;
     }
-
-    .liga-card:hover {
-      border-color: rgba(201,168,76,0.5);
-      background: rgba(10,46,26,0.75);
-    }
-
-    .liga-card-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .liga-card-info { flex: 1; }
-
-    .liga-nome {
-      font-weight: 600;
-      font-size: 0.95rem;
-      margin-bottom: 0.25rem;
-    }
-
+    .liga-card:hover { border-color: rgba(201,168,76,0.4); }
+    .liga-nome { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
     .liga-meta {
       font-size: 0.75rem;
       color: var(--cinzento);
@@ -80,7 +55,6 @@
       gap: 1rem;
       flex-wrap: wrap;
     }
-
     .liga-codigo {
       display: inline-block;
       font-family: var(--fonte-mono);
@@ -95,29 +69,21 @@
       cursor: pointer;
       transition: background var(--transicao);
     }
-
     .liga-codigo:hover { background: rgba(201,168,76,0.2); }
     .liga-codigo::before { content: '🔑 '; font-size: 0.75rem; }
-
     .btn-ver-liga {
+      display: inline-block;
+      margin-top: 0.5rem;
       font-size: 0.75rem;
       color: var(--dourado);
-      background: rgba(201,168,76,0.1);
-      border: 1px solid rgba(201,168,76,0.25);
-      border-radius: 4px;
-      padding: 0.3rem 0.75rem;
-      white-space: nowrap;
       font-family: var(--fonte-mono);
-      flex-shrink: 0;
+      opacity: 0.7;
     }
-
-    /* ── Formulários inline ──────────────────────────────── */
     .form-inline {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
     }
-
     .form-inline input {
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(201,168,76,0.25);
@@ -128,27 +94,19 @@
       padding: 0.6rem 0.9rem;
       transition: border-color var(--transicao);
     }
-
-    .form-inline input:focus {
-      outline: none;
-      border-color: var(--dourado);
-    }
-
+    .form-inline input:focus { outline: none; border-color: var(--dourado); }
     .form-inline input::placeholder { color: rgba(245,245,240,0.3); }
-
     hr.divider-form {
       border: none;
       border-top: 1px solid rgba(201,168,76,0.15);
       margin: 1.25rem 0;
     }
-
     .empty-ligas {
       text-align: center;
       padding: 1.5rem;
       color: var(--cinzento);
       font-size: 0.85rem;
     }
-
     .toast {
       position: fixed;
       bottom: 1.5rem;
@@ -161,30 +119,14 @@
       font-size: 0.875rem;
       font-weight: 500;
       z-index: 999;
-      animation: slideIn 0.25s ease;
       display: none;
     }
 
-    @keyframes slideIn {
-      from { transform: translateY(20px); opacity: 0; }
-      to   { transform: translateY(0);    opacity: 1; }
-    }
-
-    /* ── Vista de detalhe ────────────────────────────────── */
+    /* ── Vista detalhe ── */
     #vista-detalhe { display: none; }
-
-    .detalhe-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin: 2rem 0 1.5rem;
-      flex-wrap: wrap;
-    }
-
     .btn-voltar {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
+      display: inline-block;
+      margin-bottom: 1rem;
       font-size: 0.85rem;
       color: var(--dourado);
       background: rgba(201,168,76,0.08);
@@ -193,26 +135,13 @@
       padding: 0.45rem 0.9rem;
       cursor: pointer;
       font-family: var(--fonte-corpo);
-      transition: background var(--transicao);
     }
-
     .btn-voltar:hover { background: rgba(201,168,76,0.18); }
-
-    .detalhe-titulo-bloco { flex: 1; }
-    .detalhe-titulo-bloco h2 { margin-bottom: 0.15rem; }
-
-    /* ── Tabela de classificação ─────────────────────────── */
-    .tabela-classificacao {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-
+    .tabela-classificacao { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
     .tabela-classificacao thead tr {
       background: rgba(201,168,76,0.1);
       border-bottom: 1px solid rgba(201,168,76,0.2);
     }
-
     .tabela-classificacao th {
       padding: 0.65rem 1rem;
       text-align: left;
@@ -221,38 +150,15 @@
       color: var(--dourado);
       letter-spacing: 0.07em;
     }
-
     .tabela-classificacao th:last-child,
     .tabela-classificacao td:last-child { text-align: right; }
-
-    .tabela-classificacao tbody tr {
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      transition: background var(--transicao);
-    }
-
-    .tabela-classificacao tbody tr:hover { background: rgba(201,168,76,0.05); }
-
+    .tabela-classificacao tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); }
     .tabela-classificacao tbody tr.linha-minha {
       background: rgba(201,168,76,0.08);
       border-left: 3px solid var(--dourado);
     }
-
-    .tabela-classificacao td { padding: 0.75rem 1rem; vertical-align: middle; }
-
-    .col-pos {
-      width: 3rem;
-      font-family: var(--fonte-mono);
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--cinzento);
-    }
-
-    .col-pos.top-3 { color: var(--dourado); }
-
-    .col-nome { display: flex; align-items: center; gap: 0.6rem; }
-
+    .tabela-classificacao td { padding: 0.75rem 1rem; }
     .badge-eu {
-      display: inline-block;
       font-size: 0.65rem;
       font-family: var(--fonte-mono);
       color: var(--verde-escuro);
@@ -260,25 +166,8 @@
       border-radius: 3px;
       padding: 0.1rem 0.4rem;
       font-weight: 700;
-      letter-spacing: 0.05em;
+      margin-left: 0.4rem;
     }
-
-    .col-pontos {
-      font-family: var(--fonte-mono);
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--dourado);
-      text-align: right;
-    }
-
-    .sem-pontuacoes {
-      text-align: center;
-      padding: 2rem 1rem 1rem;
-      color: var(--cinzento);
-      font-size: 0.85rem;
-    }
-
-    .sem-pontuacoes .icone-grande { font-size: 2.5rem; margin-bottom: 0.5rem; }
   </style>
 </head>
 <body>
@@ -287,7 +176,7 @@
   <div class="page-content">
     <div id="alerta" class="alerta"></div>
 
-    <!-- ══ VISTA LISTA (default) ══════════════════════════ -->
+    <!-- VISTA LISTA -->
     <div id="vista-lista">
       <div class="ligas-header">
         <div>
@@ -320,9 +209,7 @@
               <input type="text" id="nova-liga-nome" placeholder="Nome da liga" maxlength="40" />
               <button class="btn btn-primario" id="btn-criar" onclick="criarLiga()">Criar Liga</button>
             </div>
-
             <hr class="divider-form" />
-
             <p class="painel-titulo">🔗 Entrar numa Liga</p>
             <div class="form-inline">
               <input type="text" id="codigo-entrada" placeholder="Código de 6 caracteres" maxlength="6"
@@ -334,15 +221,11 @@
       </div>
     </div>
 
-    <!-- ══ VISTA DETALHE ═══════════════════════════════════ -->
+    <!-- VISTA DETALHE -->
     <div id="vista-detalhe">
-      <div class="detalhe-header">
-        <button class="btn-voltar" onclick="voltarLista()">← Voltar às Ligas</button>
-        <div class="detalhe-titulo-bloco">
-          <h2 id="detalhe-nome"></h2>
-          <p class="text-cinzento text-sm" id="detalhe-meta"></p>
-        </div>
-      </div>
+      <button class="btn-voltar" onclick="voltarLista()">← Voltar às Ligas</button>
+      <h2 id="detalhe-nome" style="margin-bottom:0.25rem;"></h2>
+      <p class="text-cinzento text-sm" id="detalhe-meta" style="margin-bottom:1.5rem;"></p>
       <div class="painel">
         <p class="painel-titulo">🏆 Classificação</p>
         <div id="detalhe-tabela">
@@ -358,267 +241,302 @@
   <script src="auth.js"></script>
   <script src="api.js"></script>
   <script>
-    if (!Auth.exigirAutenticacao()) throw new Error();
+    console.log('[ligas] script iniciado');
+
+    if (!Auth.exigirAutenticacao()) throw new Error('Não autenticado');
     Auth.preencherNavbar();
 
-    const utilizadorId = Auth.obterIDdoToken();
-    const API_BASE = 'https://onzeperfeito-app.azurewebsites.net';
+    var utilizadorId = Auth.obterIDdoToken();
+    var API_BASE = 'https://onzeperfeito-app.azurewebsites.net';
+    var ligasCache = {};
 
-    // Cache de ligas para evitar passar objetos em onclick
-    const ligasCache = {};
+    console.log('[ligas] utilizadorId:', utilizadorId);
 
-    // ── Toast ──────────────────────────────────────────────
+    // ── Utilitários ────────────────────────────────────────
     function mostrarToast(msg) {
-      const t = document.getElementById('toast');
+      var t = document.getElementById('toast');
       t.textContent = msg;
       t.style.display = 'block';
-      setTimeout(() => { t.style.display = 'none'; }, 3000);
+      setTimeout(function() { t.style.display = 'none'; }, 3000);
     }
 
     function copiarCodigo(codigo, event) {
-      event.stopPropagation(); // não ativa o onclick do card
+      event.stopPropagation();
       navigator.clipboard.writeText(codigo)
-        .then(() => mostrarToast('Código ' + codigo + ' copiado!'));
+        .then(function() { mostrarToast('Código ' + codigo + ' copiado!'); });
     }
 
-    // ── Jornada atual ──────────────────────────────────────
+    function voltarLista() {
+      document.getElementById('vista-detalhe').style.display = 'none';
+      document.getElementById('vista-lista').style.display = 'block';
+    }
+
     function jornadaAtual() {
-      const inicio  = new Date('2025-08-10');
-      const hoje    = new Date();
-      const semanas = Math.floor((hoje - inicio) / (7 * 24 * 60 * 60 * 1000)) + 1;
+      var inicio = new Date('2025-08-10');
+      var hoje = new Date();
+      var semanas = Math.floor((hoje - inicio) / (7 * 24 * 60 * 60 * 1000)) + 1;
       return Math.max(1, Math.min(semanas, 34));
     }
 
-    // ── Navegação ──────────────────────────────────────────
-    function voltarLista() {
-      document.getElementById('vista-detalhe').style.display = 'none';
-      document.getElementById('vista-lista').style.display   = 'block';
+    // ── Clicar numa liga ───────────────────────────────────
+    function clicarLiga(cacheKey) {
+      console.log('[ligas] clicarLiga:', cacheKey);
+      var liga = ligasCache[cacheKey];
+      if (!liga) { console.error('[ligas] liga não encontrada no cache:', cacheKey); return; }
+      abrirDetalhe(liga);
     }
 
-    // ── Abrir detalhe de liga (recebe ID do cache) ─────────
-    async function abrirLiga(ligaId) {
-      const liga = ligasCache[ligaId];
-      if (!liga) return;
-
-      document.getElementById('vista-lista').style.display   = 'none';
+    // ── Abrir detalhe ──────────────────────────────────────
+    function abrirDetalhe(liga) {
+      document.getElementById('vista-lista').style.display = 'none';
       document.getElementById('vista-detalhe').style.display = 'block';
 
       document.getElementById('detalhe-nome').textContent = liga.nome || 'Liga';
-      const membros = liga.membros || [];
+      var membros = Array.isArray(liga.membros) ? liga.membros : [];
       document.getElementById('detalhe-meta').textContent =
         membros.length + ' participante' + (membros.length !== 1 ? 's' : '');
 
-      const container = document.getElementById('detalhe-tabela');
+      var container = document.getElementById('detalhe-tabela');
       container.innerHTML = '<div class="loading-centro"><div class="spinner"></div></div>';
 
-      if (!membros.length) {
-        container.innerHTML = '<p class="empty-ligas">Esta liga ainda não tem membros.</p>';
+      if (membros.length === 0) {
+        container.innerHTML = '<p class="empty-ligas">Esta liga não tem membros ainda.</p>';
         return;
       }
 
-      try {
-        const jAtual  = jornadaAtual();
-        const token   = Auth.obterToken();
-        const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+      carregarClassificacao(liga, membros, container);
+    }
 
-        // Buscar equipas de todos os membros e pontuações de todas as jornadas em paralelo
-        const jornadas = Array.from({ length: jAtual }, (_, i) => i + 1);
+    // ── Carregar classificação ─────────────────────────────
+    function carregarClassificacao(liga, membros, container) {
+      console.log('[ligas] carregarClassificacao, membros:', membros.length);
 
-        const [equipasData, pontuacoesData] = await Promise.all([
-          Promise.all(membros.map(function(uid) {
-            return fetch(API_BASE + '/equipas/?utilizador_id=' + uid, { headers })
-              .then(function(r) { return r.ok ? r.json() : null; })
-              .catch(function() { return null; });
-          })),
-          Promise.all(jornadas.map(function(j) {
-            return fetch(API_BASE + '/jornadas/pontuacoes?jornada=' + j, { headers })
+      var token = Auth.obterToken();
+      var headers = {};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+
+      var jAtual = jornadaAtual();
+      console.log('[ligas] jornada atual:', jAtual);
+
+      // Buscar equipas
+      var promessasEquipas = membros.map(function(uid) {
+        return fetch(API_BASE + '/equipas/?utilizador_id=' + uid, { headers: headers })
+          .then(function(r) { return r.ok ? r.json() : null; })
+          .catch(function(e) { console.warn('[ligas] erro equipa uid=' + uid, e); return null; });
+      });
+
+      // Buscar pontuações de todas as jornadas
+      var promessasPontuacoes = [];
+      for (var j = 1; j <= jAtual; j++) {
+        (function(jornada) {
+          promessasPontuacoes.push(
+            fetch(API_BASE + '/jornadas/pontuacoes?jornada=' + jornada, { headers: headers })
               .then(function(r) { return r.ok ? r.json() : []; })
-              .catch(function() { return []; });
-          }))
-        ]);
+              .catch(function() { return []; })
+          );
+        })(j);
+      }
 
-        // Mapa: jogador_id → pontos totais acumulados
-        var ptsPorJogador = {};
-        for (var ji = 0; ji < pontuacoesData.length; ji++) {
-          var lista = Array.isArray(pontuacoesData[ji]) ? pontuacoesData[ji] : [];
-          for (var pi = 0; pi < lista.length; pi++) {
-            var p = lista[pi];
-            if (!p.jogador_id) continue;
-            ptsPorJogador[p.jogador_id] = (ptsPorJogador[p.jogador_id] || 0) + Number(p.pontuacao || 0);
-          }
-        }
+      Promise.all([Promise.all(promessasEquipas), Promise.all(promessasPontuacoes)])
+        .then(function(resultados) {
+          var equipasData = resultados[0];
+          var pontuacoesData = resultados[1];
 
-        // Calcular pontos de cada membro
-        var ranking = membros.map(function(uid, i) {
-          var equipa = equipasData[i];
-          var nome   = 'Participante ' + (i + 1);
-          var pontos = 0;
+          console.log('[ligas] equipas recebidas:', equipasData.length);
+          console.log('[ligas] jornadas recebidas:', pontuacoesData.length);
 
-          if (equipa) {
-            nome = equipa.utilizador_nome
-                || equipa.nome_utilizador
-                || equipa.nome_equipa
-                || nome;
-
-            var jogadores = equipa.jogadores || [];
-            for (var k = 0; k < jogadores.length; k++) {
-              var jid = jogadores[k].id || jogadores[k].jogador_id || jogadores[k]._id;
-              pontos += ptsPorJogador[jid] || 0;
+          // Mapa jogador_id → pontos totais
+          var ptsPorJogador = {};
+          for (var ji = 0; ji < pontuacoesData.length; ji++) {
+            var lista = Array.isArray(pontuacoesData[ji]) ? pontuacoesData[ji] : [];
+            for (var pi = 0; pi < lista.length; pi++) {
+              var p = lista[pi];
+              if (!p || !p.jogador_id) continue;
+              ptsPorJogador[p.jogador_id] = (ptsPorJogador[p.jogador_id] || 0) + Number(p.pontuacao || 0);
             }
           }
 
-          return { uid: uid, nome: nome, pontos: pontos };
+          // Calcular ranking
+          var ranking = membros.map(function(uid, i) {
+            var equipa = equipasData[i];
+            var nome = 'Participante ' + (i + 1);
+            var pontos = 0;
+
+            if (equipa) {
+              nome = equipa.utilizador_nome || equipa.nome_utilizador || equipa.nome_equipa || nome;
+              var jogadores = Array.isArray(equipa.jogadores) ? equipa.jogadores : [];
+              for (var k = 0; k < jogadores.length; k++) {
+                var jog = jogadores[k];
+                var jid = jog.id || jog.jogador_id || jog._id;
+                if (jid) pontos += ptsPorJogador[jid] || 0;
+              }
+            }
+
+            return { uid: uid, nome: nome, pontos: pontos };
+          });
+
+          ranking.sort(function(a, b) { return b.pontos - a.pontos; });
+          console.log('[ligas] ranking calculado:', ranking);
+
+          renderizarTabela(ranking, container);
+        })
+        .catch(function(err) {
+          console.error('[ligas] erro na classificação:', err);
+          container.innerHTML = '<p class="empty-ligas">Erro ao carregar classificação.</p>';
         });
-
-        // Ordenar por pontos (decrescente)
-        ranking.sort(function(a, b) { return b.pontos - a.pontos; });
-
-        renderizarClassificacao(ranking, container);
-
-      } catch (err) {
-        console.error(err);
-        container.innerHTML = '<p class="empty-ligas">Não foi possível carregar a classificação.</p>';
-      }
     }
 
     // ── Renderizar tabela ──────────────────────────────────
-    function renderizarClassificacao(ranking, container) {
+    function renderizarTabela(ranking, container) {
       var temPontos = ranking.some(function(m) { return m.pontos > 0; });
 
-      var aviso = '';
-      if (!temPontos) {
-        aviso = '<div class="sem-pontuacoes"><div class="icone-grande">⏳</div>' +
-                '<p>Ainda não há jornadas jogadas.<br>As pontuações aparecem aqui após a primeira jornada.</p></div>';
-      }
-
-      var html = '<table class="tabela-classificacao"><thead><tr>' +
-                 '<th>#</th><th>Equipa / Utilizador</th>' +
-                 (temPontos ? '<th>Pontos</th>' : '') +
-                 '</tr></thead><tbody>';
+      var html = '<table class="tabela-classificacao"><thead><tr><th>#</th><th>Utilizador</th>';
+      if (temPontos) html += '<th>Pontos</th>';
+      html += '</tr></thead><tbody>';
 
       for (var i = 0; i < ranking.length; i++) {
-        var m      = ranking[i];
-        var pos    = i + 1;
-        var euSou  = m.uid === utilizadorId;
-        var medalha = pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : pos;
+        var m = ranking[i];
+        var pos = i + 1;
+        var euSou = (m.uid === utilizadorId);
+        var medalha = pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : String(pos);
 
         html += '<tr class="' + (euSou ? 'linha-minha' : '') + '">';
-        html += '<td class="col-pos ' + (pos <= 3 ? 'top-3' : '') + '">' + medalha + '</td>';
-        html += '<td><div class="col-nome">' + m.nome +
-                (euSou ? ' <span class="badge-eu">Tu</span>' : '') +
-                '</div></td>';
-        if (temPontos) {
-          html += '<td class="col-pontos">' + m.pontos + ' pts</td>';
-        }
+        html += '<td style="font-family:var(--fonte-mono);font-weight:700;' + (pos <= 3 ? 'color:var(--dourado)' : '') + '">' + medalha + '</td>';
+        html += '<td>' + m.nome + (euSou ? '<span class="badge-eu">Tu</span>' : '') + '</td>';
+        if (temPontos) html += '<td style="font-family:var(--fonte-mono);font-weight:700;color:var(--dourado);text-align:right">' + m.pontos + ' pts</td>';
         html += '</tr>';
       }
 
       html += '</tbody></table>';
-      container.innerHTML = aviso + html;
+      if (!temPontos) {
+        html = '<p class="empty-ligas" style="margin-bottom:1rem">⏳ Ainda não há jornadas jogadas. Lista de participantes:</p>' + html;
+      }
+      container.innerHTML = html;
     }
 
     // ── Liga Global ────────────────────────────────────────
-    async function carregarLigaGlobal() {
-      const container = document.getElementById('liga-global-container');
-      try {
-        const ligas = await API.ligas.listar('global');
-        if (!ligas.length) {
-          container.innerHTML = '<p class="empty-ligas">A liga global ainda não foi criada.</p>';
-          return;
-        }
-        const liga = ligas[0];
-        const cacheKey = 'global_' + (liga.id || liga._id || '0');
-        ligasCache[cacheKey] = liga;
+    function carregarLigaGlobal() {
+      console.log('[ligas] carregarLigaGlobal...');
+      var container = document.getElementById('liga-global-container');
 
-        container.innerHTML =
-          '<div class="liga-card" onclick="abrirLiga(\'' + cacheKey + '\')">' +
-            '<div class="liga-card-inner">' +
-              '<div class="liga-card-info">' +
-                '<div class="liga-nome">' + (liga.nome || 'Liga Global OnzePerfeito') + '</div>' +
-                '<div class="liga-meta">' +
-                  '<span>👥 ' + (liga.membros || []).length + ' participantes</span>' +
-                  '<span>Aberta a todos</span>' +
-                '</div>' +
+      API.ligas.listar('global')
+        .then(function(ligas) {
+          console.log('[ligas] global recebida:', ligas);
+          if (!ligas || !ligas.length) {
+            container.innerHTML = '<p class="empty-ligas">A liga global ainda não foi criada.</p>';
+            return;
+          }
+          var liga = ligas[0];
+          var key = 'g0';
+          ligasCache[key] = liga;
+
+          var membros = Array.isArray(liga.membros) ? liga.membros : [];
+          container.innerHTML =
+            '<div class="liga-card" id="card-' + key + '">' +
+              '<div class="liga-nome">' + (liga.nome || 'Liga Global OnzePerfeito') + '</div>' +
+              '<div class="liga-meta">' +
+                '<span>👥 ' + membros.length + ' participantes</span>' +
+                '<span>Aberta a todos</span>' +
               '</div>' +
-              '<span class="btn-ver-liga">Ver classificação →</span>' +
-            '</div>' +
-          '</div>';
-      } catch (e) {
-        container.innerHTML = '<p class="empty-ligas">Não foi possível carregar a liga global.</p>';
-      }
+              '<div class="btn-ver-liga">Clica para ver a classificação →</div>' +
+            '</div>';
+
+          document.getElementById('card-' + key).addEventListener('click', function() {
+            clicarLiga(key);
+          });
+        })
+        .catch(function(e) {
+          console.error('[ligas] erro global:', e);
+          container.innerHTML = '<p class="empty-ligas">Não foi possível carregar a liga global.</p>';
+        });
     }
 
-    // ── Minhas ligas privadas ──────────────────────────────
-    async function carregarMinhasLigas() {
-      const container = document.getElementById('minhas-ligas-container');
-      try {
-        const ligas = await API.ligas.listarPrivadas();
-        const minhas = ligas.filter(function(l) {
-          return (l.membros || []).includes(utilizadorId) || l.criador_id === utilizadorId;
-        });
+    // ── Minhas ligas ───────────────────────────────────────
+    function carregarMinhasLigas() {
+      console.log('[ligas] carregarMinhasLigas...');
+      var container = document.getElementById('minhas-ligas-container');
 
-        if (!minhas.length) {
-          container.innerHTML = '<p class="empty-ligas">Ainda não estás em nenhuma liga privada.<br>Cria uma ou entra com um código.</p>';
-          return;
-        }
+      API.ligas.listarPrivadas()
+        .then(function(ligas) {
+          console.log('[ligas] privadas recebidas:', ligas);
+          var minhas = (ligas || []).filter(function(l) {
+            var membros = Array.isArray(l.membros) ? l.membros : [];
+            return membros.indexOf(utilizadorId) !== -1 || l.criador_id === utilizadorId;
+          });
 
-        var html = '';
-        for (var i = 0; i < minhas.length; i++) {
-          var l = minhas[i];
-          var cacheKey = 'priv_' + (l.id || l._id || i);
-          ligasCache[cacheKey] = l;
+          if (!minhas.length) {
+            container.innerHTML = '<p class="empty-ligas">Ainda não estás em nenhuma liga privada.<br>Cria uma ou entra com um código.</p>';
+            return;
+          }
 
-          html +=
-            '<div class="liga-card" onclick="abrirLiga(\'' + cacheKey + '\')">' +
-              '<div class="liga-card-inner">' +
-                '<div class="liga-card-info">' +
-                  '<div class="liga-nome">' + l.nome + '</div>' +
-                  '<div class="liga-meta">' +
-                    '<span>👥 ' + (l.membros || []).length + ' membros</span>' +
-                    (l.criador_id === utilizadorId ? '<span style="color:var(--dourado)">Tu criaste</span>' : '') +
-                  '</div>' +
-                  '<div class="liga-codigo" onclick="copiarCodigo(\'' + l.codigo + '\', event)" title="Clica para copiar">' +
-                    l.codigo +
-                  '</div>' +
-                '</div>' +
-                '<span class="btn-ver-liga">Ver classificação →</span>' +
+          container.innerHTML = '';
+
+          minhas.forEach(function(l, i) {
+            var key = 'p' + i;
+            ligasCache[key] = l;
+
+            var membros = Array.isArray(l.membros) ? l.membros : [];
+            var div = document.createElement('div');
+            div.className = 'liga-card';
+            div.id = 'card-' + key;
+            div.innerHTML =
+              '<div class="liga-nome">' + l.nome + '</div>' +
+              '<div class="liga-meta">' +
+                '<span>👥 ' + membros.length + ' membros</span>' +
+                (l.criador_id === utilizadorId ? '<span style="color:var(--dourado)">Tu criaste</span>' : '') +
               '</div>' +
-            '</div>';
-        }
-        container.innerHTML = html;
-      } catch (e) {
-        container.innerHTML = '<p class="empty-ligas">Não foi possível carregar as ligas.</p>';
-      }
+              '<div class="liga-codigo" id="cod-' + key + '" title="Clica para copiar">' + l.codigo + '</div>' +
+              '<div class="btn-ver-liga">Clica para ver a classificação →</div>';
+
+            container.appendChild(div);
+
+            // Event listener no card (navega para detalhe)
+            div.addEventListener('click', function() {
+              clicarLiga(key);
+            });
+
+            // Event listener no código (copia, não navega)
+            var codEl = document.getElementById('cod-' + key);
+            if (codEl) {
+              codEl.addEventListener('click', function(e) {
+                copiarCodigo(l.codigo, e);
+              });
+            }
+          });
+        })
+        .catch(function(e) {
+          console.error('[ligas] erro privadas:', e);
+          container.innerHTML = '<p class="empty-ligas">Não foi possível carregar as ligas.</p>';
+        });
     }
 
     // ── Criar liga ─────────────────────────────────────────
-    async function criarLiga() {
-      const nome = document.getElementById('nova-liga-nome').value.trim();
-      const btn  = document.getElementById('btn-criar');
+    function criarLiga() {
+      var nome = document.getElementById('nova-liga-nome').value.trim();
+      var btn  = document.getElementById('btn-criar');
 
-      if (!nome) {
-        API.mostrarAlerta('alerta', 'Indica um nome para a liga.', 'erro');
-        return;
-      }
+      if (!nome) { API.mostrarAlerta('alerta', 'Indica um nome para a liga.', 'erro'); return; }
 
       API.setBotaoCarregando(btn, true);
-      try {
-        const liga = await API.ligas.criar(nome, utilizadorId);
-        document.getElementById('nova-liga-nome').value = '';
-        API.mostrarAlerta('alerta', 'Liga "' + liga.nome + '" criada! Código: ' + liga.codigo, 'sucesso');
-        mostrarToast('Código da liga: ' + liga.codigo);
-        await carregarMinhasLigas();
-      } catch (e) {
-        API.mostrarAlerta('alerta', e.message || 'Erro ao criar liga.', 'erro');
-      } finally {
-        API.setBotaoCarregando(btn, false, 'Criar Liga');
-      }
+      API.ligas.criar(nome, utilizadorId)
+        .then(function(liga) {
+          document.getElementById('nova-liga-nome').value = '';
+          API.mostrarAlerta('alerta', 'Liga "' + liga.nome + '" criada! Código: ' + liga.codigo, 'sucesso');
+          mostrarToast('Código da liga: ' + liga.codigo);
+          carregarMinhasLigas();
+        })
+        .catch(function(e) {
+          API.mostrarAlerta('alerta', (e && e.message) || 'Erro ao criar liga.', 'erro');
+        })
+        .finally(function() {
+          API.setBotaoCarregando(btn, false, 'Criar Liga');
+        });
     }
 
     // ── Entrar em liga ─────────────────────────────────────
-    async function entrarLiga() {
-      const codigo = document.getElementById('codigo-entrada').value.trim().toUpperCase();
-      const btn    = document.getElementById('btn-entrar');
+    function entrarLiga() {
+      var codigo = document.getElementById('codigo-entrada').value.trim().toUpperCase();
+      var btn    = document.getElementById('btn-entrar');
 
       if (codigo.length !== 6) {
         API.mostrarAlerta('alerta', 'O código deve ter exatamente 6 caracteres.', 'erro');
@@ -626,21 +544,25 @@
       }
 
       API.setBotaoCarregando(btn, true);
-      try {
-        await API.ligas.entrar(codigo, utilizadorId);
-        document.getElementById('codigo-entrada').value = '';
-        API.mostrarAlerta('alerta', 'Entraste na liga com sucesso!', 'sucesso');
-        await carregarMinhasLigas();
-      } catch (e) {
-        API.mostrarAlerta('alerta', e.message || 'Código inválido ou liga não encontrada.', 'erro');
-      } finally {
-        API.setBotaoCarregando(btn, false, 'Entrar');
-      }
+      API.ligas.entrar(codigo, utilizadorId)
+        .then(function() {
+          document.getElementById('codigo-entrada').value = '';
+          API.mostrarAlerta('alerta', 'Entraste na liga com sucesso!', 'sucesso');
+          carregarMinhasLigas();
+        })
+        .catch(function(e) {
+          API.mostrarAlerta('alerta', (e && e.message) || 'Código inválido ou liga não encontrada.', 'erro');
+        })
+        .finally(function() {
+          API.setBotaoCarregando(btn, false, 'Entrar');
+        });
     }
 
     // ── Inicializar ────────────────────────────────────────
+    console.log('[ligas] a inicializar...');
     carregarLigaGlobal();
     carregarMinhasLigas();
+    console.log('[ligas] chamadas iniciadas');
   </script>
 </body>
 </html>
