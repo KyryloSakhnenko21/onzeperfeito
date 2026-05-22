@@ -419,9 +419,9 @@
       const slots = FORMACOES[formacaoAtual];
       const usados = new Set();
       taticaAtual = {};
-      const titulares = equipaAtual.slice(0, 11);
+      // Usar todos os jogadores do plantel (não apenas os primeiros 11)
       slots.forEach(slot => {
-        const jog = titulares.find(j => j.posicao === slot.posicao && !usados.has(j.id));
+        const jog = equipaAtual.find(j => j.posicao === slot.posicao && !usados.has(j.id));
         if (jog) { taticaAtual[slot.id] = jog; usados.add(jog.id); }
         else taticaAtual[slot.id] = null;
       });
@@ -546,9 +546,9 @@
       const lista = document.getElementById('bancada-lista');
       lista.innerHTML = '';
       const colocados = new Set(Object.values(taticaAtual).filter(Boolean).map(j=>j.id));
-      const suplentes = new Set(equipaAtual.slice(11,15).map(j=>j.id));
 
-      let jogadores = equipaAtual.filter(j => !suplentes.has(j.id));
+      // Mostrar TODOS os 15 jogadores na bancada (incluindo suplentes)
+      let jogadores = [...equipaAtual];
       if (filtroAtual !== 'todos') jogadores = jogadores.filter(j => j.posicao === filtroAtual);
 
       if (!jogadores.length) {
@@ -604,9 +604,11 @@
     function renderizarSuplentes() {
       const lista = document.getElementById('suplentes-campo-lista');
       lista.innerHTML = '';
-      const suplentes = equipaAtual.slice(11, 15);
+      // Suplentes = jogadores do plantel que NAO estao em nenhum slot do campo
+      const colocados = new Set(Object.values(taticaAtual).filter(Boolean).map(j=>j.id));
+      const suplentes = equipaAtual.filter(j => !colocados.has(j.id));
       if (!suplentes.length) {
-        lista.innerHTML = '<span style="font-size:0.78rem;color:var(--cinzento);">Sem suplentes.</span>';
+        lista.innerHTML = '<span style="font-size:0.78rem;color:var(--cinzento);">Todos os jogadores est\u00e3o no campo.</span>';
         return;
       }
       suplentes.forEach(j => {

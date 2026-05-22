@@ -72,3 +72,19 @@ def login():
     }, JWT_SECRET, algorithm="HS256")
 
     return jsonify({"token": token, "nome": utilizador['nome']}), 200
+
+
+@auth_bp.route('/utilizador/<utilizador_id>', methods=['GET'])
+def obter_utilizador(utilizador_id):
+    container = get_container('utilizadores')
+    try:
+        lista = list(container.query_items(
+            query="SELECT c.id, c.nome FROM c WHERE c.id = @id",
+            parameters=[{"name": "@id", "value": utilizador_id}],
+            enable_cross_partition_query=True
+        ))
+        if not lista:
+            return jsonify({"erro": "Utilizador não encontrado"}), 404
+        return jsonify(lista[0]), 200
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500

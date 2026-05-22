@@ -317,14 +317,19 @@
       var jAtual = jornadaAtual();
       console.log('[ligas] jornada atual:', jAtual);
 
-      // Buscar equipas
+      // Buscar nomes, equipas e pontuações em paralelo
+      var promessasNomes = membros.map(function(uid) {
+        return fetch(API_BASE + '/auth/utilizador/' + uid, { headers: headers })
+          .then(function(r) { return r.ok ? r.json() : null; })
+          .catch(function() { return null; });
+      });
+
       var promessasEquipas = membros.map(function(uid) {
         return fetch(API_BASE + '/equipas/?utilizador_id=' + uid, { headers: headers })
           .then(function(r) { return r.ok ? r.json() : null; })
           .catch(function(e) { console.warn('[ligas] erro equipa uid=' + uid, e); return null; });
       });
 
-      // Buscar pontuações de todas as jornadas
       var promessasPontuacoes = [];
       for (var j = 1; j <= jAtual; j++) {
         (function(jornada) {
@@ -336,11 +341,13 @@
         })(j);
       }
 
-      Promise.all([Promise.all(promessasEquipas), Promise.all(promessasPontuacoes)])
+      Promise.all([Promise.all(promessasNomes), Promise.all(promessasEquipas), Promise.all(promessasPontuacoes)])
         .then(function(resultados) {
-          var equipasData = resultados[0];
-          var pontuacoesData = resultados[1];
+          var nomesData     = resultados[0];
+          var equipasData   = resultados[1];
+          var pontuacoesData = resultados[2];
 
+          console.log('[ligas] nomes recebidos:', nomesData);
           console.log('[ligas] equipas recebidas:', equipasData.length);
           console.log('[ligas] jornadas recebidas:', pontuacoesData.length);
 
@@ -357,12 +364,12 @@
 
           // Calcular ranking
           var ranking = membros.map(function(uid, i) {
+            var utilizadorInfo = nomesData[i];
             var equipa = equipasData[i];
-            var nome = 'Participante ' + (i + 1);
+            var nome = (utilizadorInfo && utilizadorInfo.nome) ? utilizadorInfo.nome : ('Participante ' + (i + 1));
             var pontos = 0;
 
             if (equipa) {
-              nome = equipa.utilizador_nome || equipa.nome_utilizador || equipa.nome_equipa || nome;
               var jogadores = Array.isArray(equipa.jogadores) ? equipa.jogadores : [];
               for (var k = 0; k < jogadores.length; k++) {
                 var jog = jogadores[k];
@@ -389,9 +396,11 @@
     function renderizarTabela(ranking, container) {
       var temPontos = ranking.some(function(m) { return m.pontos > 0; });
 
-      var html = '<table class="tabela-classificacao"><thead><tr><th>#</th><th>Utilizador</th>';
-      if (temPontos) html += '<th>Pontos</th>';
-      html += '</tr></thead><tbody>';
+      var aviso = !temPontos
+        ? '<p class="empty-ligas" style="margin-bottom:1rem">⏳ Ainda não há jornadas jogadas. As pontuações aparecem após a primeira jornada.</p>'
+        : '';
+
+      var html = '<table class="tabela-classificacao"><thead><tr><th>#</th><th>Utilizador</th><th>Pontos</th></tr></thead><tbody>';
 
       for (var i = 0; i < ranking.length; i++) {
         var m = ranking[i];
@@ -402,15 +411,12 @@
         html += '<tr class="' + (euSou ? 'linha-minha' : '') + '">';
         html += '<td style="font-family:var(--fonte-mono);font-weight:700;' + (pos <= 3 ? 'color:var(--dourado)' : '') + '">' + medalha + '</td>';
         html += '<td>' + m.nome + (euSou ? '<span class="badge-eu">Tu</span>' : '') + '</td>';
-        if (temPontos) html += '<td style="font-family:var(--fonte-mono);font-weight:700;color:var(--dourado);text-align:right">' + m.pontos + ' pts</td>';
+        html += '<td style="font-family:var(--fonte-mono);font-weight:700;color:var(--dourado);text-align:right">' + m.pontos + ' pts</td>';
         html += '</tr>';
       }
 
       html += '</tbody></table>';
-      if (!temPontos) {
-        html = '<p class="empty-ligas" style="margin-bottom:1rem">⏳ Ainda não há jornadas jogadas. Lista de participantes:</p>' + html;
-      }
-      container.innerHTML = html;
+      container.innerHTML = aviso + html;
     }
 
     // ── Liga Global ────────────────────────────────────────
@@ -437,7 +443,7 @@
                 '<span>👥 ' + membros.length + ' participantes</span>' +
                 '<span>Aberta a todos</span>' +
               '</div>' +
-              '<div class="btn-ver-liga">Clica para ver a classificação →</div>' +
+              '<div class="btn-ver-liga"></div>' +
             '</div>';
 
           document.getElementById('card-' + key).addEventListener('click', function() {
